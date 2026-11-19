@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Vitalbor · Validador de Nota</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f4f9;--card:#fff;--tx:#1b2620;--mut:#66756c;--bd:#d9e1dc;--ac:#3d3f96;--ac2:#f08a24;--ok:#137a3f;--okb:#e3f6ea;--er:#b42318;--erb:#fdeaea;--wa:#8a5a00;--wab:#fff3d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121816;--card:#1b2320;--tx:#e8efea;--mut:#9aaaa0;--bd:#2f3b35;--ac:#9b9dff;--ok:#5fd68c;--okb:#12301f;--er:#ff8a80;--erb:#3a1a18;--wa:#f0c060;--wab:#3a2e10}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:var(--card);border-bottom:4px solid var(--ac);border-image:linear-gradient(90deg,var(--ac),var(--ac2)) 1}
+.hd{max-width:1000px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.hd img{height:42px;max-width:200px;background:#fff;border-radius:6px;padding:2px 4px}.hd b{font-size:15px;color:var(--ac)}.hd span{display:block;font-size:12px;color:var(--mut)}
+.w{max-width:1000px;margin:0 auto;padding:14px 16px}
+h2{font-size:16px;margin:0 0 8px;color:var(--ac)}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tabs button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font-weight:600;cursor:pointer}
+.tabs button.on{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#fff;border-color:transparent}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.g{grid-template-columns:1fr}}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 2px}
+input,select,textarea{width:100%;padding:8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:60px}input[type=color]{padding:2px;height:36px}input[type=checkbox]{width:auto}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.f2 .full{grid-column:1/-1}
+.b{padding:9px 14px;border:0;border-radius:8px;background:var(--ac);color:#fff;font-weight:600;cursor:pointer;margin:6px 6px 0 0}
+.b.s{background:transparent;color:var(--tx);border:1px solid var(--bd)}.b.ok{background:var(--ok);color:#fff}.b:disabled{opacity:.4;cursor:not-allowed}
+.sc{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top}th{color:var(--mut);font-size:12px}
+.tag{padding:2px 8px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.tag.ok{background:var(--okb);color:var(--ok)}.tag.er{background:var(--erb);color:var(--er)}.tag.wa{background:var(--wab);color:var(--wa)}
+.ban{padding:12px;border-radius:8px;font-weight:700;margin-bottom:10px}.ban.ok{background:var(--okb);color:var(--ok)}.ban.er{background:var(--erb);color:var(--er)}
+.hint{font-size:12px;color:var(--mut)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.row>div{flex:1;min-width:140px}.hide{display:none}
+details{margin-bottom:12px}summary{cursor:pointer;font-weight:600;color:var(--ac2)}
+</style></head><body>
+<header><div class="hd"><div id="logo"><img alt="Vitalbor" src="data:image/png;base64,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"></div><div><b>Validador de Nota × Pedido</b><span>Conferência antes de faturar</span></div></div></header>
+<div class="w">
+<details><summary>⚙ Configurações (logo, cores, tabela de preços)</summary><div class="c" style="margin-top:8px">
+ <div class="f2"><div><label>Logo da Vitalbor (imagem)</label><input type="file" accept="image/*" onchange="logo(this)"></div>
+ <div class="row"><div><label>Cor principal</label><input type="color" id="c1" value="#3d3f96" oninput="cfgSave()"></div><div><label>Cor secundária</label><input type="color" id="c2" value="#f08a24" oninput="cfgSave()"></div></div></div>
+ <p class="hint">Produtos, preços e transportadoras ficam na aba Cadastros.</p><textarea id="tab" class="hide" onchange="cfgSave()"></textarea>
+ <label><input type="checkbox" id="dsc" checked onchange="cfgSave()"> Descontar o ICMS da base ao conferir PIS e COFINS (o IPI é sobre o valor dos produtos)</label>
+ <p class="hint">Regras fixas: ICMS BA 7% · RN 7% · PR 19,5% com diferimento de 38,45% (efetivo ≈ 12%) · demais estados 12% · IPI 5,2% · PIS 0,65% · COFINS 3%.</p></div></details>
+<div class="tabs"><button id="t1" class="on" onclick="tab(1)">Validar nota</button><button id="t2" onclick="tab(2)">Histórico</button><button id="t3" onclick="tab(3)">Cadastros</button><button id="t4" onclick="tab(4)">Cotação</button><button id="t5" onclick="tab(5)">Gestão de Pedidos</button></div>
+
+<div id="p1">
+ <div class="g">
+  <div class="c"><h2>1. Pedido do cliente</h2>
+   <label>Vincular a pedido já lançado</label><select id="sel" onchange="pick()"></select>
+   <label>Anexar o pedido do cliente (PDF, ou JSON/CSV/TXT)</label><input type="file" accept=".pdf,.json,.csv,.txt" onchange="loadF('p',this)"><div id="pe"></div>
+   <div class="f2" id="pf"></div>
+   <button class="b s" onclick="lancar()">Lançar pedido manual (guardar)</button>
+  </div>
+  <div class="c"><h2>2. Nota (modelo/teste)</h2>
+   <label>Anexar a nota (XML ou PDF do DANFE)</label><input type="file" accept=".xml,.pdf" onchange="loadF('n',this)"><div id="ne"></div>
+   <div class="f2" id="nf"></div>
+  </div>
+ </div>
+ <button class="b" onclick="validar()">Validar nota</button><button class="b s" onclick="limpar()">Limpar</button>
+ <div class="c hide" id="res" style="margin-top:14px"><h2>Resultado da conferência</h2><div id="ban"></div>
+  <div class="sc"><table><thead><tr><th>#</th><th>Conferência</th><th>Detalhe</th><th>Status</th></tr></thead><tbody id="rb"></tbody></table></div>
+  <button class="b ok" id="fat" disabled onclick="fat()">Liberar para faturar</button><button class="b" onclick="salvar()">Salvar no histórico</button><button class="b" onclick="gpBx()">Dar baixa nos pedidos</button><span id="msg" class="hint"></span>
+ </div>
+</div>
+
+<div id="p2" class="hide"><div class="c"><h2>Histórico de análises salvas</h2>
+ <div class="row"><div><label>Data início da análise</label><input type="date" id="di" onchange="hist()"></div><div><label>Data fim da análise</label><input type="date" id="df" onchange="hist()"></div>
+ <div><label>Situação</label><select id="fs" onchange="hist()"><option value="">Todas</option><option>OK</option><option>Com pendência</option></select></div><div><button class="b" onclick="pdf()">Gerar PDF do período</button><button class="b s" onclick="csv()">Exportar CSV</button></div></div>
+ <div class="sc" style="margin-top:10px"><table><thead><tr><th>Data</th><th>Pedido</th><th>Nota</th><th>Cliente</th><th>UF</th><th>Situação</th><th>Pendências</th><th></th></tr></thead><tbody id="hb"></tbody></table></div><p class="hint" id="hc"></p></div></div>
+<div id="p3" class="hide"><div class="g">
+ <div class="c"><h2>Produtos e valores</h2>
+  <div class="f2"><div><label>Cliente (opcional)</label><input id="pc"></div><div><label>Preço unitário (R$)</label><input id="pv" placeholder="10,05"></div><div class="full"><label>Produto / peça</label><input id="pp"></div><div><label>Material</label><select id="pm"><option value="">—</option><option value="EPDM">EPDM</option><option value="NBR">Nitrílica (NBR)</option></select></div></div>
+  <button class="b" onclick="addProd()">Salvar produto</button><button class="b s" onclick="clrProd()">Limpar</button>
+  <label>Buscar</label><input id="pq" oninput="cad()" placeholder="filtrar por peça ou cliente">
+  <div class="sc" style="max-height:340px;overflow:auto;margin-top:8px"><table><thead><tr><th>Cliente</th><th>Produto</th><th>Material</th><th>Preço</th><th></th></tr></thead><tbody id="pb"></tbody></table></div>
+  <label>Importar em lote (cliente;peça;material;preço — cliente e material opcionais)</label><textarea id="pbulk"></textarea>
+  <button class="b s" onclick="impProd()">Importar lista</button><button class="b s" onclick="expProd()">Exportar CSV</button></div>
+ <div class="c"><h2>Transportadoras</h2>
+  <label>Nome da transportadora</label><input id="tn"><button class="b" onclick="addTr()">Adicionar</button>
+  <div class="sc" style="max-height:340px;overflow:auto;margin-top:8px"><table><thead><tr><th>Transportadora</th><th></th></tr></thead><tbody id="tb2"></tbody></table></div>
+  <label>Importar em lote (uma por linha)</label><textarea id="tbulk"></textarea>
+  <button class="b s" onclick="impTr()">Importar lista</button><button class="b s" onclick="expTr()">Exportar CSV</button></div>
+ <div class="c" style="grid-column:1/-1"><h2>Peças por caixa (conferência de volumes)</h2>
+  <div class="f2"><div><label>Peça</label><input id="xp" placeholder="COL-100"></div><div><label>Quantidade por caixa</label><input id="xq" placeholder="650"></div>
+  <div><label>Tamanho da caixa</label><select id="xt"><option>Grande</option><option>Média</option></select></div><div><label>Peso da peça (g)</label><input id="xg" placeholder="42"></div></div>
+  <button class="b" onclick="addCx()">Salvar peça</button><button class="b s" onclick="clrCx()">Limpar</button>
+  <div class="row" style="margin-top:8px"><div><label>Peso da caixa de papelão Média (g)</label><input id="xm" oninput="cxpSave()"></div><div><label>Peso da caixa de papelão Grande (g)</label><input id="xl" oninput="cxpSave()"></div></div>
+  <div class="sc" style="max-height:360px;overflow:auto;margin-top:8px"><table><thead><tr><th>Peça</th><th>Qtd/caixa</th><th>Caixa</th><th>Peso peça (g)</th><th>Peças/caixa cheia (kg)</th><th></th></tr></thead><tbody id="xb"></tbody></table></div>
+  <label>Importar em lote (peça;qtd por caixa;caixa;peso em g)</label><textarea id="xbulk"></textarea>
+  <button class="b s" onclick="impCx()">Importar lista</button><button class="b s" onclick="expCx()">Exportar CSV</button>
+  <p class="hint">Na validação: volumes esperados = quantidade de cada peça da nota ÷ quantidade por caixa, arredondado para cima (aceita também a faixa em que as sobras vão na mesma caixa).</p></div>
+</div><p class="hint">Os cadastros ficam salvos neste navegador. Use Exportar CSV para guardar uma cópia de segurança.</p></div>
+</div>
+
+<div id="p4" class="hide">
+ <div class="g">
+  <div class="c"><h2>1. Pedido do cliente</h2>
+   <label>Anexar o pedido que o cliente enviou (PDF)</label><input type="file" accept=".pdf" onchange="cotLoad(this)"><div id="ce"></div>
+   <button class="b s" onclick="cotManual()">Lançar pedido manualmente</button>
+   <label>Cliente já cadastrado</label><select id="csel" onchange="if(this.value!=='')cotUse(+this.value)"></select>
+   <details><summary>Colar itens em lote</summary><p class="hint">Uma linha por item: descrição;quantidade. Ex.: COLETOR DN 150;540</p><textarea id="cbulk"></textarea><button class="b s" onclick="cotBulk()">Adicionar itens</button></details>
+   <div class="f2" id="cf"></div><p class="hint" id="cst"></p></div>
+  <div class="c"><h2>2. Condições da cotação</h2>
+   <div class="f2"><div><label>Cotação Nº</label><input id="k_num"></div><div><label>Prazo em dias (30 ou 30/60/90)</label><input id="k_prazo"></div><div><label>Previsão de faturamento</label><input id="k_fat" type="date"></div><div><label>Vendedor</label><input id="k_vend"></div></div>
+   <details style="margin-top:10px"><summary>Equivalências de nomes dos produtos</summary><p class="hint">Uma linha por produto: produto cadastrado = nome 1 = nome 2 = ... Ex.: COL-150 NBR = COLETOR DN 150 = ANEL DE BORRACHA DN 150. Quando você escolhe um produto à mão na cotação, o nome do cliente entra aqui sozinho.</p><textarea id="ceq" style="min-height:110px" onchange="eqt=this.value;sv('vn_eq',eqt);cotR()"></textarea></details>
+   <details><summary>Regras de impostos por UF / cidade</summary><p class="hint">Uma linha: UF;cidade (opcional);ICMS;IPI;PIS;COFINS, em %. A cidade vale mais que a UF. Sem regra, vale o padrão (BA/RN 7% · PR 12% efetivo · demais 12% · IPI 5,2% · PIS 0,65% · COFINS 3%). Ex.: SC;São José;12;5,2;0,65;3</p><textarea id="crg" onchange="rgt=this.value;sv('vn_rg',rgt);cotR()"></textarea></details>
+  </div>
+ </div>
+ <div class="c" style="margin-top:14px"><h2>3. Itens e impostos</h2>
+  <div class="sc"><table><thead><tr><th>Descrição no pedido do cliente</th><th>Produto cadastrado</th><th>Quant.</th><th>Caixas</th><th>Unit.</th><th>Total</th><th></th></tr></thead><tbody id="cib"></tbody></table></div>
+  <button class="b s" onclick="cit.push({d:'',q:'',pi:-1});cotR()">+ Item</button>
+  <div id="cts"></div>
+  <button class="b ok" onclick="cotSave()">Salvar cotação e gerar PDF</button><button class="b s" onclick="cotNew()">Nova cotação</button></div>
+ <div class="g" style="margin-top:14px">
+  <div class="c"><h2>Cotações salvas</h2><div class="sc"><table><thead><tr><th>Nº</th><th>Data</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody id="clb"></tbody></table></div></div>
+  <div class="c"><h2>Clientes cadastrados</h2><div class="sc"><table><thead><tr><th>Cliente</th><th>CNPJ</th><th>Cidade</th><th></th></tr></thead><tbody id="cub"></tbody></table></div></div>
+ </div>
+</div>
+
+<div id="p5" class="hide">
+ <div id="gbx"></div>
+ <div class="c"><h2>Visão geral</h2><div id="gdash" style="display:flex;flex-wrap:wrap;gap:10px"></div></div>
+ <div class="c" style="margin-top:14px"><h2>Prioridade de produção</h2><p class="hint">Pontuação de 0 a 100: prazo 40% (vencido ou marcado como urgente = máximo), idade do pedido mais antigo 20% (30 dias = máximo), quantidade pendente 25% e número de pedidos 15%. Entram só pedidos ainda sem produção concluída.</p>
+  <div class="sc"><table><thead><tr><th>#</th><th>Produto</th><th>Pendente</th><th>Pedidos</th><th>Pontos</th><th>Por quê</th><th></th></tr></thead><tbody id="gfl"></tbody></table></div><div id="gfd"></div></div>
+ <div class="c"><h2>Carteira de pedidos</h2>
+  <div class="f2"><div><label>Buscar (cliente, nº do pedido, produto)</label><input id="gq" oninput="gpR()"></div><div><label>Status</label><select id="gst" onchange="gpR()"></select></div></div>
+  <div class="sc"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Entrada</th><th>Prazo</th><th>Status</th><th>Solic.</th><th>Fatur.</th><th>Pend.</th><th></th></tr></thead><tbody id="gb"></tbody></table></div>
+  <p class="hint" id="gc"></p></div>
+ <div id="gdet"></div>
+ <div class="c" style="margin-top:14px"><h2>Lançar pedido</h2>
+  <label>Importar o PDF do pedido do cliente</label><input type="file" accept=".pdf" onchange="gpPdf(this)"><div id="ge"></div>
+  <div class="f2"><div><label>Nº do pedido (Omie)</label><input id="g_num"></div><div><label>Pedido do cliente (opcional)</label><input id="g_pc"></div><div><label>Cliente / Razão social</label><input id="g_cli"></div><div><label>CNPJ</label><input id="g_cnpj"></div><div><label>Data de entrada</label><input id="g_ent" type="date"></div><div><label>Prazo de entrega</label><input id="g_prazo" type="date"></div></div>
+  <label>Observações</label><textarea id="g_obs"></textarea>
+  <div class="sc"><table><thead><tr><th>Código</th><th>Descrição</th><th>Quant.</th><th></th></tr></thead><tbody id="gib"></tbody></table></div><datalist id="gdl"></datalist>
+  <button class="b s" onclick="gpIt.push({cod:'',desc:'',sol:''});gpFR()">+ Item</button>
+  <button class="b ok" onclick="gpSave()">Salvar pedido</button><button class="b s" onclick="gpNew()">Limpar</button></div>
+ <div class="c" style="margin-top:14px"><h2>Notas vinculadas</h2><div class="sc"><table><thead><tr><th>NF</th><th>Cliente</th><th>Data</th><th>Pedidos baixados</th><th>Excesso</th><th></th></tr></thead><tbody id="gnb"></tbody></table></div></div>
+ <div class="c" style="margin-top:14px"><h2>Backup dos pedidos</h2><p class="hint">Os pedidos ficam salvos neste navegador (IndexedDB e localStorage). Exporte uma cópia de vez em quando.</p>
+  <button class="b s" onclick="gpExp()">Exportar backup (JSON)</button> <label>Importar backup (só acrescenta pedidos que ainda não existem)</label><input type="file" accept=".json" onchange="gpImp(this)"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const PF=[['numero','Nº do pedido','t'],['prazo','Prazo em dias (opcional, ex.: 30/45/60)','t'],['cliente','Cliente','t',1],['transp','Transportadora','t',1],['itens','Itens do pedido (descrição;qtd;preço unit.;subtotal), um por linha','a',1]];
+const NF=[['nNF','Nº da nota','t'],['natOp','Natureza da operação','t',1],['cliente','Cliente (destinatário)','t',1],['uf','UF destino','t'],['emissao','Data de emissão','d'],['venc1','Venc. 1ª parcela','d'],['vProd','Valor dos produtos','t'],['vBC','Base de cálculo ICMS','t'],['vICMS','Valor ICMS','t'],['vIPI','Valor IPI','t'],['vPIS','Valor PIS','t'],['vCOFINS','Valor COFINS','t'],['volumes','Volumes (caixas) na nota','t'],['peso','Peso bruto (kg) — opcional','t'],['pesoL','Peso líquido (kg) — opcional','t'],['transp','Transportadora','t',1],['infCpl','Informações complementares','a',1],['itens','Itens da nota (produto;qtd;preço unit.;total do item), um por linha','a',1]];
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+let peds=ld('vn_peds',[]),hs=ld('vn_hist',[]),cfg=ld('vn_cfg2',{c1:'#3d3f96',c2:'#f08a24',tab:'',dsc:true,logo:''}),last=null;
+function fld(w,[k,l,t,full]){const id=w+'_'+k;return `<div class="${full?'full':''}"><label>${l}</label>${t=='a'?`<textarea id="${id}"></textarea>`:`<input id="${id}" ${t=='d'?'type="date"':''}>`}</div>`}
+function build(){$('pf').innerHTML=PF.map(f=>fld('p',f)).join('');$('nf').innerHTML=NF.map(f=>fld('n',f)).join('');
+ $('sel').innerHTML='<option value="">— nenhum —</option>'+peds.map((p,i)=>`<option value="${i}">${esc(p.numero)} · ${esc(p.cliente)}</option>`).join('')}
+function applyCfg(){const r=document.documentElement.style;r.setProperty('--ac',cfg.c1);r.setProperty('--ac2',cfg.c2);$('c1').value=cfg.c1;$('c2').value=cfg.c2;$('tab').value=cfg.tab;$('dsc').checked=cfg.dsc;
+ if(cfg.logo)$('logo').innerHTML='<img alt="Vitalbor" src="'+cfg.logo+'">'}
+function cfgSave(){cfg.c1=$('c1').value;cfg.c2=$('c2').value;cfg.tab=$('tab').value;cfg.dsc=$('dsc').checked;sv('vn_cfg2',cfg);applyCfg()}
+function logo(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{cfg.logo=r.result;sv('vn_cfg2',cfg);applyCfg()};r.readAsDataURL(f)}
+function tab(n){[1,2,3,4,5].forEach(k=>{$('p'+k).classList.toggle('hide',n!=k);$('t'+k).classList.toggle('on',n==k)});if(n==2)hist();if(n==3)cad();if(n==4)cotInit();if(n==5)gpInit()}
+function num(s){if(s===''||s==null)return NaN;s=String(s).replace(/R\$|\s|kg/gi,'');if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');return parseFloat(s)}
+function dt(s){s=String(s||'').trim();let m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[0];m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);return m?`${m[3]}-${m[2]}-${m[1]}`:''}
+const nt=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim();
+const fmt=d=>d?d.split('-').reverse().join('/'):'—',pc=x=>isFinite(x)?x.toFixed(2).replace('.',',')+'%':'—';
+function get(w,F){const o={};F.forEach(([k])=>o[k]=$(w+'_'+k).value.trim());return o}
+function fill(w,F,o){F.forEach(([k,,t])=>{if(o[k]!=null&&o[k]!=='')$(w+'_'+k).value=t=='d'?dt(o[k]):o[k]})}
+function xml(txt){const d=new DOMParser().parseFromString(txt,'text/xml');if(d.querySelector('parsererror'))return null;
+ const g=(p,n)=>{const e=p&&p.getElementsByTagName(n)[0];return e?e.textContent:''},D=d.documentElement,T=d.getElementsByTagName('ICMSTot')[0],tr=d.getElementsByTagName('transp')[0],dest=d.getElementsByTagName('dest')[0];
+ const vols=[...d.getElementsByTagName('vol')],sm=n=>vols.reduce((a,v)=>a+(num(g(v,n))||0),0),dets=[...d.getElementsByTagName('det')];
+ const fr={0:'CIF (0 - Emitente)',1:'FOB (1 - Destinatário)',2:'3 - Terceiros',9:'9 - Sem frete'}[g(tr,'modFrete')]||'';
+ return{nNF:g(D,'nNF'),natOp:g(D,'natOp'),cliente:g(dest,'xNome'),uf:g(dest&&dest.getElementsByTagName('enderDest')[0],'UF'),emissao:g(D,'dhEmi')||g(D,'dEmi'),venc1:g(d.getElementsByTagName('dup')[0],'dVenc'),
+ vProd:g(T,'vProd'),vBC:g(T,'vBC'),vICMS:g(T,'vICMS'),vIPI:g(T,'vIPI'),vPIS:g(T,'vPIS'),vCOFINS:g(T,'vCOFINS'),frete:fr,transp:g(tr&&tr.getElementsByTagName('transporta')[0],'xNome'),
+ volumes:sm('qVol')||'',peso:sm('pesoB')||'',pesoL:sm('pesoL')||'',qtd:dets.reduce((a,x)=>a+(num(g(x,'qCom'))||0),0)||'',infCpl:g(D,'infCpl'),
+ itens:dets.map(x=>[g(x,'xProd'),g(x,'qCom'),g(x,'vUnCom'),g(x,'vProd')].join(';')).join('\n'),numero:g(dets[0],'xPed')}}
+const AL={numero:['numero','pedido','n pedido'],cliente:['cliente'],qtd:['qtd','quantidade'],peso:['peso'],volumes:['volumes','volume'],frete:['frete','tipo frete'],transp:['transportadora','transp'],prazo:['prazo','condicao'],itens:['itens']};
+function parseTxt(t){t=t.trim();let o={};if(t[0]=='{'){try{o=JSON.parse(t)}catch(e){}}else t.split(/\r?\n/).forEach(l=>{const m=l.match(/^\s*([^:;=]+)\s*[:;=]\s*(.+)$/);if(m)o[m[1]]=m[2].trim()});
+ const r={};for(const[k,v]of Object.entries(o)){const n=nt(k).toLowerCase();for(const f in AL)if(AL[f].includes(n)&&!r[f])r[f]=v}return r}
+function loadF(w,i){const f=i.files[0],e=$(w+'e');if(!f)return;if(/\.pdf$/i.test(f.name))return loadPdf(f,e,w);const r=new FileReader();r.onload=()=>{const o=w=='n'?xml(r.result):parseTxt(r.result);
+ if(!o||!Object.values(o).some(Boolean)){e.innerHTML='<p class="hint" style="color:var(--er)">Não consegui ler o arquivo. Digite os dados.</p>';return}
+ fill(w,w=='n'?NF:PF,o);if(w=='n'&&o.numero&&!$('p_numero').value)$('p_numero').value=o.numero;e.innerHTML='<p class="hint" style="color:var(--ok)">Lido: '+esc(f.name)+'. Confira os campos.</p>'};r.readAsText(f)}
+function pick(){const i=$('sel').value;if(i!=='')fill('p',PF,peds[i])}
+function lancar(){const p=get('p',PF);if(!p.numero){alert('Informe o nº do pedido.');return}const i=peds.findIndex(x=>x.numero==p.numero);if(i>=0)peds[i]=p;else peds.push(p);sv('vn_peds',peds);build();fill('p',PF,p);$('sel').value=peds.findIndex(x=>x.numero==p.numero);alert('Pedido lançado.')}
+const eq=(a,b,t=.01)=>Math.abs(a-b)<=t,like=(a,b)=>{a=nt(a);b=nt(b);return a&&b&&(a==b||a.includes(b)||b.includes(a))};
+function fr(s){s=nt(s);if(/^0|CIF|EMITENTE|REMETENTE/.test(s))return'CIF';if(/^1|FOB|DESTINAT/.test(s))return'FOB';if(/^2|TERC/.test(s))return'TERC';if(/^9|SEM/.test(s))return'SEM';return s}
+function checks(p,n){const C=[],add=(t,st,d)=>C.push({t,st,d}),miss=(t,d)=>add(t,'wa',d||'Dados insuficientes para conferir');
+ // 1
+ add('Natureza da operação é venda',/VENDA/.test(nt(n.natOp))?'ok':'er','Nota: '+(n.natOp||'não informada'));
+ // 2
+ add('Nome do cliente',!p.cliente||!n.cliente?'wa':like(p.cliente,n.cliente)?'ok':'er',`Pedido: ${p.cliente||'—'} | Nota: ${n.cliente||'—'}`);
+ // 3
+ const dias=parseInt((p.prazo||'').match(/\d+/)),em=dt(n.emissao),v1=dt(n.venc1);
+ if(!isFinite(dias)||!em||!v1)miss('Vencimento da 1ª parcela','Informe prazo no pedido, emissão e vencimento na nota');
+ else{const x=new Date(em+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+dias);const e=x.toISOString().slice(0,10);add('Vencimento da 1ª parcela',e==v1?'ok':'er',`Esperado ${fmt(e)} (emissão + ${dias} dias) | Nota: ${fmt(v1)}`)}
+ // 4
+ const uf=nt(n.uf).slice(0,2),bc=num(n.vBC),ic=num(n.vICMS),pi=ic/bc*100;let alvo=uf=='BA'||uf=='RN'?[7]:uf=='PR'?[19.5,12]:[12];
+ if(!uf||!isFinite(pi))miss('ICMS (valor ÷ base)','Informe UF, base e valor do ICMS');
+ else add('ICMS (valor ÷ base)',alvo.some(a=>eq(pi,a,.06))?'ok':'er',`UF ${uf}: calculado ${pc(pi)} | esperado ${uf=='PR'?'19,5% (ou 12,00% efetivo após diferimento de 38,45%)':pc(alvo[0])}`);
+ // 5
+ const vp=num(n.vProd),b=vp-(cfg.dsc&&isFinite(ic)?ic:0);
+ [['IPI','vIPI',5.2],['PIS','vPIS',.65],['COFINS','vCOFINS',3]].forEach(([nm,k,a])=>{const x=num(n[k])/(k=='vIPI'?b0:b)*100;
+  if(!isFinite(x))miss(nm+' sobre a base','Informe valor dos produtos e '+nm);else add(nm+' sobre '+(k=='vIPI'||!cfg.dsc?'o valor dos produtos':'a base sem ICMS'),eq(x,a,.05)?'ok':'er',`Calculado ${pc(x)} | esperado ${pc(a)}`)});
+ // transp, frete, vol, peso, qtd
+ add('Transportadora',!p.transp||!n.transp?'wa':like(p.transp,n.transp)?'ok':'er',`Pedido: ${p.transp||'—'} | Nota: ${n.transp||'—'}`);
+ add('Tipo do frete',!p.frete||!n.frete?'wa':fr(p.frete)==fr(n.frete)?'ok':'er',`Pedido: ${p.frete||'—'} | Nota: ${n.frete||'—'}`);
+ const cn=(a,b,t)=>{const x=num(a),y=num(b);return!isFinite(x)||!isFinite(y)?'wa':t(x,y)?'ok':'er'};
+ add('Volumes',cn(p.volumes,n.volumes,(x,y)=>x==y),`Pedido: ${p.volumes||'—'} | Nota: ${n.volumes||'—'}`);
+ const pw=num(p.peso);add('Peso',!isFinite(pw)||(!isFinite(num(n.peso))&&!isFinite(num(n.pesoL)))?'wa':[n.peso,n.pesoL].some(w=>eq(num(w),pw,pw*.005))?'ok':'er',`Pedido: ${p.peso||'—'} | Nota bruto: ${n.peso||'—'} / líquido: ${n.pesoL||'—'}`);
+ add('Quantidade',cn(p.qtd,n.qtd,(x,y)=>eq(x,y,.001)),`Pedido: ${p.qtd||'—'} | Nota: ${n.qtd||'—'}`);
+ // preço
+ const tb={};cfg.tab.split(/\r?\n/).forEach(l=>{const m=l.split(';');if(m.length>1)tb[nt(m[0])]=num(m[1])});
+ const its=(n.itens||'').split(/\r?\n/).filter(Boolean).map(l=>l.split(';'));
+ if(!its.length||!Object.keys(tb).length)miss('Preço conforme a tabela','Cadastre a tabela em Configurações e os itens da nota');
+ else{const bad=[],nf=[];its.forEach(([nm,q,u])=>{const k=Object.keys(tb).find(x=>x==nt(nm)||nt(nm).includes(x)||x.includes(nt(nm)));if(!k)nf.push(nm);else if(!eq(num(u),tb[k],.005))bad.push(`${nm}: nota ${u} × tabela ${tb[k]}`)});
+  add('Preço conforme a tabela',bad.length?'er':nf.length?'wa':'ok',bad.concat(nf.map(x=>x+': fora da tabela')).join(' · ')||'Todos os itens seguem a tabela')}
+ // info compl
+ const inf=nt(n.infCpl),pn=nt(p.numero);
+ add('Info. complementares referenciam o pedido',!pn||!inf?'wa':inf.includes(pn)?'ok':'er',`Pedido ${p.numero||'—'}`);
+ if(uf=='PR')add('Diferimento do ICMS (PR) nas info. complementares',!inf?'wa':/DIFERIMENT/.test(inf)?'ok':'er','Procura a palavra “diferimento”');
+ return C}
+function validar(){const p=get('p',PF),n=get('n',NF),C=checks2(p,n),bad=C.filter(c=>c.st=='er'),wa=C.filter(c=>c.st=='wa');
+ last={p,n,ok:!bad.length&&!wa.length,pend:bad.concat(wa).map(c=>c.t)};$('res').classList.remove('hide');$('msg').textContent='';
+ $('ban').innerHTML=last.ok?'<div class="ban ok">✔ Tudo confere. Pode faturar.</div>':`<div class="ban er">✖ ${bad.length} divergência(s) e ${wa.length} pendência(s) de dados. Não fature.</div>`;
+ $('rb').innerHTML=C.map((c,i)=>`<tr><td>${i+1}</td><td>${c.t}</td><td class="hint">${esc(c.d)}</td><td><span class="tag ${c.st}">${{ok:'OK',er:'Divergente',wa:'Pendente'}[c.st]}</span></td></tr>`).join('');$('fat').disabled=!last.ok;$('res').scrollIntoView({behavior:'smooth'})}
+function salvar(f){if(!last)return;const d=new Date(),dd=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),rec={pedido:last.p.numero,nota:last.n.nNF,cliente:last.n.cliente||last.p.cliente,uf:last.n.uf,transp:last.n.transp,valor:last.n.vProd,ok:last.ok,pend:last.pend};let h=hs.find(x=>x.id==last.sid);if(h)Object.assign(h,rec);else{h={id:Date.now(),data:d.toISOString(),dia:dd,...rec};hs.unshift(h);last.sid=h.id}if(f&&last.ok)h.fat=true;
+ $('msg').textContent=sv('vn_hist',hs)?'Salvo no histórico.':'Não foi possível salvar neste navegador.'}
+function fat(){salvar(true);$('msg').textContent='Liberado para faturar e salvo no histórico.'}
+function limpar(){[...document.querySelectorAll('#pf input,#pf textarea,#nf input,#nf textarea')].forEach(e=>e.value='');$('sel').value='';$('pe').innerHTML=$('ne').innerHTML='';$('res').classList.add('hide');last=null}
+function flt(){const a=$('di').value,b=$('df').value,s=$('fs').value;return hs.filter(h=>{const d=dia(h);return(!a||d>=a)&&(!b||d<=b)&&(!s||(s=='OK')==h.ok)})}
+function hist(){const l=flt();$('hb').innerHTML=l.map(h=>`<tr><td>${new Date(h.data).toLocaleString('pt-BR')}</td><td>${esc(h.pedido)}</td><td>${esc(h.nota)}</td><td>${esc(h.cliente)}</td><td>${esc(h.uf)}</td><td><span class="tag ${h.ok?'ok':'er'}">${h.fat?'Liberada p/ faturar':h.ok?'OK (salva)':'Com pendência'}</span></td><td class="hint">${esc((h.pend||[]).join(', '))}</td><td><button class="b s" onclick="del(${h.id})">Excluir</button></td></tr>`).join('')||'<tr><td colspan="8" class="hint">Nada no período.</td></tr>';$('hc').textContent=l.length+' análise(s) no período.'}
+function del(id){if(!confirm('Excluir esta análise?'))return;hs=hs.filter(h=>h.id!=id);sv('vn_hist',hs);hist()}
+function csv(){const rows=[['Data','Pedido','Cliente','UF','Situação','Pendências']].concat(flt().map(h=>[new Date(h.data).toLocaleString('pt-BR'),h.pedido,h.cliente,h.uf,h.ok?'OK':'Com pendência',(h.pend||[]).join(' | ')]));
+ const t='\ufeff'+rows.map(r=>r.map(c=>'"'+String(c??'').replace(/"/g,'""')+'"').join(';')).join('\n');saveFile('historico-notas.csv',t)}
+function dia(h){if(h.dia)return h.dia;const d=new Date(h.data);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+async function saveFile(name,data){try{const bl=data instanceof Blob?data:new Blob([data],{type:/\.csv$/i.test(name)?'text/csv;charset=utf-8':'application/octet-stream'}),u=URL.createObjectURL(bl),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},1500)}catch(e){alert('Não foi possível salvar o arquivo.')}}
+const brl=v=>isFinite(v)?'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2}):'-';
+function pdf(){const l=flt();if(!l.length){alert('Nenhuma análise no período selecionado.');return}
+ if(!window.jspdf){alert('A biblioteca de PDF não carregou. Recarregue a página.');return}
+ const doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),W=210,M=14,a=$('di').value,b=$('df').value,per=a||b?(a?fmt(a):'início')+' a '+(b?fmt(b):'hoje'):'todo o período';let y=M;
+ const nl=n=>{if(y+n>284){doc.addPage();y=M}},blk=(t,bold,rgb)=>{const s=doc.splitTextToSize(t,W-2*M-4);doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(...(rgb||[30,30,30]));doc.text(s,M+2,y);y+=s.length*4.3};
+ try{const im=$('logo').querySelector('img'),r=im.naturalWidth/im.naturalHeight;doc.addImage(im,'PNG',M,y-2,14*r,14)}catch(e){}
+ doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(61,63,150);doc.text('Relatório de notas enviadas',W-M,y+4,{align:'right'});
+ doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(90,90,90);doc.text('Período: '+per,W-M,y+9,{align:'right'});doc.text('Emitido em '+new Date().toLocaleString('pt-BR'),W-M,y+13,{align:'right'});
+ y+=18;doc.setDrawColor(240,138,36);doc.setLineWidth(.7);doc.line(M,y,W-M,y);y+=7;
+ const days={};l.slice().sort((p,q)=>p.data<q.data?-1:1).forEach(h=>(days[dia(h)]=days[dia(h)]||[]).push(h));let tl=0,tp=0,tv=0;
+ Object.keys(days).sort().forEach(d=>{const it=days[d],lib=it.filter(h=>h.fat),pe=it.filter(h=>!h.ok),vl=lib.reduce((s,h)=>s+(num(h.valor)||0),0);tl+=lib.length;tp+=pe.length;tv+=vl;
+  nl(24);doc.setFillColor(238,238,247);doc.rect(M,y-4.5,W-2*M,7,'F');doc.setFontSize(10.5);blk(fmt(d)+'  -  '+it.length+' nota(s): '+lib.length+' liberada(s) para faturar, '+pe.length+' com pendência',true,[61,63,150]);y+=2;doc.setFontSize(9);
+  it.forEach(h=>{const hr=new Date(h.data).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),st=h.fat?'LIBERADA PARA FATURAR':h.ok?'Conferida OK (salva, não liberada)':'COM PENDÊNCIA';
+   nl(22);blk(hr+' | Pedido '+(h.pedido||'-')+' | Nota '+(h.nota||'-')+' | '+(h.cliente||'-')+' | UF '+(h.uf||'-'),true);
+   blk('Transportadora: '+(h.transp||'-')+'   Valor dos produtos: '+brl(num(h.valor)),false);
+   blk('Situação: '+st,true,h.fat?[19,122,63]:h.ok?[30,30,30]:[180,35,24]);
+   if(h.pend&&h.pend.length)blk('Pendências: '+h.pend.join('; '),false,[180,35,24]);
+   y+=1;doc.setDrawColor(220,220,220);doc.setLineWidth(.2);doc.line(M,y,W-M,y);y+=3.5});
+  nl(8);blk('Total liberado para faturar no dia: '+brl(vl),true);y+=5});
+ nl(26);y+=2;doc.setDrawColor(61,63,150);doc.setLineWidth(.5);doc.line(M,y,W-M,y);y+=6;doc.setFontSize(10);
+ blk('Resumo do período ('+per+')',true,[61,63,150]);blk(l.length+' análise(s) salva(s) | '+tl+' liberada(s) para faturar | '+tp+' com pendência | Valor liberado: '+brl(tv),false);
+ const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);doc.setFontSize(8);doc.setTextColor(130,130,130);doc.text('Vitalbor · Validador de Nota - Página '+i+' de '+n,W/2,291,{align:'center'})}
+ saveFile('historico-notas_'+(a||'inicio')+'_'+(b||'hoje')+'.pdf',doc.output('blob'))}
+async function pdfLines(buf){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const doc=await pdfjsLib.getDocument({data:buf,isEvalSupported:false}).promise,out=[];
+ for(let i=1;i<=doc.numPages;i++){const tc=await(await doc.getPage(i)).getTextContent(),rows=[];tc.items.forEach(t=>{if(!t.str.trim())return;const y=t.transform[5],r=rows.find(r=>Math.abs(r.y-y)<=3);if(r)r.t.push([t.transform[4],t.str]);else rows.push({y,t:[[t.transform[4],t.str]]})});
+  rows.sort((a,b)=>b.y-a.y).forEach(r=>out.push(r.t.sort((a,b)=>a[0]-b[0]).map(x=>x[1].trim()).join(' ')))}return out}
+function parseOrderOld(L){const T=L.join('\n'),o={},it=[];let m=T.match(/N[º°o]\s*(\d{4,})/i);if(m)o.numero=m[1];
+ m=T.match(/\b([A-ZÀ-Ú][A-ZÀ-Ú0-9.&\- ]{4,}?(?:LTDA|S\.?A\.?|EIRELI|EPP))\b/);if(m)o.cliente=m[1].trim();
+ const d=L.find(l=>/DESPACHO/i.test(l));if(d)o.transp=d.replace(/^.*?DESPACHO\s*[:\-]?\s*/i,'').trim();
+ L.forEach(l=>{const x=l.match(/([\d.]+)\s+UNID?\.?\s+(.+?)\s+([\d.]*\d,\d{2,4})\s+([\d.]*\d,\d{2})(?:\s+[\d,]+\s*%)?\s*$/i);if(x)it.push([x[2].trim(),x[1].replace(/\./g,''),x[3],x[4]].join(';'))});o.itens=it.join('\n');return o}
+const OWN=/VITALBOR|ELASTOBOR/;
+async function pdfRaw(buf){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const doc=await pdfjsLib.getDocument({data:buf,isEvalSupported:false}).promise,it=[];
+ for(let i=1;i<=doc.numPages;i++){const tc=await(await doc.getPage(i)).getTextContent();tc.items.forEach(t=>{const s=t.str.trim();if(s)it.push({s,x:t.transform[4],x2:t.transform[4]+(t.width||0),y:i*10000-t.transform[5]})})}return it}
+function rows(I,tol=3){const R=[];I.slice().sort((a,b)=>a.y-b.y).forEach(t=>{const r=R.find(r=>Math.abs(r.y-t.y)<=tol);if(r)r.t.push(t);else R.push({y:t.y,t:[t]})});R.forEach(r=>r.t.sort((a,b)=>a.x-b.x));return R}
+const toLines=I=>rows(I).map(r=>r.t.map(t=>t.s).join(' '));
+function parseTable(I){const R=rows(I),K=s=>/^(DESCRI|PRODUTO|MERCADORIA)/i.test(s)?'d':/^(QTD|QTDE|QUANT)/i.test(s)?'q':/UNIT|PRE[ÇC]O/i.test(s)?'u':/TOTAL/i.test(s)?'t':'x';
+ const H=R.findIndex(r=>{const k=r.t.map(t=>K(t.s));return k.includes('d')&&k.includes('q')&&(k.includes('u')||k.includes('t'))});if(H<0)return[];
+ const hd=R[H].t.map(t=>({...t,k:K(t.s),cx:(t.x+t.x2)/2})),money=s=>/^-?\d{1,3}(?:\.\d{3})*(?:,\d+)?$|^-?\d+(?:[.,]\d+)?$/.test(s),stop=/TOTAL (DO|GERAL|DA)|OBSERVA|DADOS ADICIONAIS/i,body=[];
+ for(let i=H+1;i<R.length;i++){const s=R[i].t.map(t=>t.s).join(' ');if(stop.test(s))break;if(R[i].t.some(t=>K(t.s)=='q')&&R[i].t.some(t=>K(t.s)=='d'))continue;R[i].t.forEach(t=>body.push(t))}
+ const col=t=>{const c=(t.x+t.x2)/2,dx=h=>Math.min(Math.abs(c-h.cx),Math.abs(t.x2-h.x2),Math.abs(t.x-h.x));return hd.reduce((b,h)=>dx(h)<dx(b)?h:b)};
+ const qn=s=>/,/.test(s)?String(num(s)):/^\d{1,3}(\.\d{3})+$/.test(s)?s.replace(/\./g,''):s;
+ const A=body.filter(t=>col(t).k=='q'&&money(t.s)).sort((a,b)=>a.y-b.y);
+ return A.map((a,i)=>{const lo=i?(A[i-1].y+a.y)/2:-1e9,hi=i<A.length-1?(a.y+A[i+1].y)/2:1e9,g=body.filter(t=>t.y>lo&&t.y<=hi).map(t=>({t,k:col(t).k})),
+  pk=k=>(g.find(x=>x.k==k&&money(x.t.s))||{t:{s:''}}).t.s,q=qn(a.s),u=pk('u');let tt=pk('t');
+  const d=g.filter(x=>x.k=='d').sort((p,r)=>p.t.y-r.t.y||p.t.x-r.t.x).map(x=>x.t.s).join(' ').replace(/;/g,',');
+  if(!tt&&u&&isFinite(num(q)*num(u)))tt=(num(q)*num(u)).toFixed(2).replace('.',',');return[d,q,u,tt].join(';')}).filter(x=>x.split(';')[0])}
+function parseOrder(L,I){const ob=parseOrderOld(L);if(!I||!I.length)return ob;const T=L.join('\n'),o={};let m;
+ m=T.match(/(?:^|[\s:])N[º°]\.?\s*:?\s*(\d{3,})/m)||T.match(/PEDIDO(?:\s+DE\s+COMPRA)?\s*(?:N[º°o.]*)?\s*:?\s*(\d{4,})/i)||T.match(/ORDEM\s+DE\s+COMPRA\D{0,20}(\d{3,})/i);if(m)o.numero=m[1];
+ m=T.match(/(?:CLIENTE|COMPRADOR)\s*:\s*(.+)/i);if(m){const c=m[1].split(/\s{2,}|\s+CNPJ|\s+CPF/i)[0].trim();if(c&&!OWN.test(nt(c)))o.cliente=c}
+ const fi=L.findIndex(l=>/^FORNECEDOR\s*:/i.test(l));
+ if(!o.cliente&&fi>=0&&OWN.test(nt(L[fi]))){const fy=(I.find(t=>/^FORNECEDOR/i.test(t.s))||{y:1e9}).y,
+  c=I.filter(t=>t.y<fy&&/^[A-ZÀ-Ú0-9][A-ZÀ-Ú0-9.&\-\/ ]{9,}$/.test(t.s)&&!/PEDIDO|COMPRA|MATRIZ|CNPJ|EMISS|P[ÁA]G|\bRUA\b|\bAV\b|AVENIDA|\bCEP\b|\bIE\b|INSC|FAZENDA|CONEX|TELEFONE/.test(t.s)).sort((a,b)=>a.y-b.y||a.x-b.x)[0];if(c)o.cliente=c.s}
+ if(!o.cliente){const re=/\b([A-ZÀ-Ú][A-ZÀ-Ú0-9.&\- ]{4,}?(?:LTDA|S\.?\s?A\.?|EIRELI|EPP))\b/g;let x;while((x=re.exec(T)))if(!OWN.test(nt(x[1]))){o.cliente=x[1].trim();break}}
+ m=T.match(/COND[^\n:]{0,25}:\s*([^\n]*?)(?=\s+(?:FRETE|TRANSP|TELEFONE)\b|\n|$)/i);
+ if(m&&m[1].trim())o.prazo=m[1].trim();else if(!m){const z=T.match(/(\d{1,3}(?:\s*[\/-]\s*\d{1,3})*)\s*(?:DIAS|DDL)\b/i);if(z)o.prazo=z[1]+' DIAS'}
+ m=T.match(/TRANSPORTADORA\s*:\s*([^\n]*?)(?=\s+(?:TELEFONE|FONE|FRETE|E-?MAIL)\b|\n|$)/i);let tp=m?m[1].replace(/^\d+\s*[-–]\s*/,'').trim():'';
+ if(!tp&&ob.transp)tp=ob.transp;if(tp)o.transp=tp;
+ const tb=parseTable(I),oi=ob.itens?ob.itens.split('\n').length:0;o.itens=oi&&oi>=tb.length?ob.itens:tb.join('\n');
+ for(const k in ob)if(!o[k])o[k]=ob[k];return o}
+async function loadPdf(f,e,w){e.innerHTML='<p class=hint>Lendo o PDF...</p>';try{const I=await pdfRaw(await f.arrayBuffer()),L=toLines(I);if(!L.length)throw 1;
+ [...document.querySelectorAll(w=='n'?'#nf input,#nf textarea':'#pf input,#pf textarea')].forEach(x=>x.value='');
+ const o=w=='n'?parseDanfe(L):parseOrder(L,I),k=o.itens?o.itens.split('\n').length:0;w=='n'?fill('n',NF,o):fill('p',PF,o);
+ e.innerHTML=(k?`<p class=hint style=color:var(--ok)>PDF lido: ${k} item(ns) encontrado(s). Confira os campos abaixo.</p>`:'<p class=hint style=color:var(--wa)>PDF lido, mas não achei os itens. Preencha os itens à mão.</p>')+`<details><summary class=hint>Ver texto lido do PDF</summary><pre class=hint style="white-space:pre-wrap;max-height:180px;overflow:auto">${esc(L.join('\n'))}</pre></details>`}catch(x){e.innerHTML='<p class=hint style=color:var(--er)>Não consegui ler o PDF (pode ser imagem/escaneado). Digite os dados.</p>'}}
+function checks2(p,n){const C=[],add=(t,st,d)=>C.push({t,st,d}),miss=(t,d)=>add(t,'wa',d||'Dados insuficientes para conferir'),ln=s=>(s||'').split(/\r?\n/).filter(Boolean).map(l=>l.split(';')),P=ln(p.itens),N=ln(n.itens),sp=s=>String(s||'').replace(/\(.*?\)/g,'').trim(),cl=p.cliente||n.cliente;
+ add('Natureza da operação é venda',/VENDA/.test(nt(n.natOp))?'ok':'er','Nota: '+(n.natOp||'não informada'));
+ add('Nome do cliente',!p.cliente||!n.cliente?'wa':like(p.cliente,n.cliente)?'ok':'er',`Pedido: ${p.cliente||'—'} | Nota: ${n.cliente||'—'}`);
+ const dias=parseInt((p.prazo||'').match(/\d+/)),em=dt(n.emissao),v1=dt(n.venc1);
+ if(isFinite(dias)){if(!em||!v1)miss('Vencimento da 1ª parcela','Informe emissão e vencimento na nota');else{const x=new Date(em+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+dias);const e=x.toISOString().slice(0,10);add('Vencimento da 1ª parcela',e==v1?'ok':'er',`Esperado ${fmt(e)} (emissão + ${dias} dias) | Nota: ${fmt(v1)}`)}}
+ if(!P.length||!N.length)miss('Peças, quantidades e valores','Preencha os itens do pedido e da nota');
+ else{P.forEach(([d,q,u,s])=>{const m=N.find(x=>same(x[0],d));if(!m){add('Peça: '+sp(d),'er','Não encontrada na nota');return}
+   const e=[];if(!eq(num(q),num(m[1]),.001))e.push(`quantidade ${q} × ${m[1]}`);if(!eq(num(u),num(m[2]),.005))e.push(`valor unit. ${u} × ${m[2]}`);if(isFinite(num(s))&&isFinite(num(m[3]))&&!eq(num(s),num(m[3]),.01))e.push(`total ${s} × ${m[3]}`);
+   add('Peça: '+sp(d),e.length?'er':'ok',e.length?'Pedido × nota: '+e.join('; '):`Quantidade ${q}, unit. ${u}, total ${s||'—'} conferem`)});
+  N.filter(x=>!P.some(y=>same(x[0],y[0]))).forEach(x=>add('Peça na nota: '+sp(x[0]),'er','Não consta no pedido'));
+  const sP=P.reduce((a,x)=>a+(num(x[3])||0),0);add('Valor total dos produtos',!sP||!isFinite(num(n.vProd))?'wa':eq(sP,num(n.vProd),.01)?'ok':'er',`Pedido: ${brl(sP)} | Nota: ${brl(num(n.vProd))}`)}
+ const tb=prods.map(r=>({c:r.c,p:r.p,v:num(r.v)}));
+ if(!tb.length||!P.length)miss('Peça cadastrada e preço da tabela','Cadastre os produtos na aba Cadastros e informe os itens do pedido');
+ else{const bad=[];P.forEach(([d,,u])=>{const r=findProd(sp(d),cl);if(r==='colepdm')bad.push(sp(d)+': coletor (COL) só existe em nitrílica (NBR), não em EPDM');else if(r==='amb')bad.push(sp(d)+': material (EPDM ou nitrílica) não identificado');else if(!r)bad.push(sp(d)+': fora da tabela');else if(!eq(num(u),num(r.v),.005))bad.push(`${sp(d)}: pedido ${u} × tabela ${r.v}`)});add('Peça cadastrada e preço da tabela',bad.length?'er':'ok',bad.join(' · ')||'Todas as peças estão na tabela com o preço correto')}
+ volChecks(N,n,add,miss);
+ {const tc=v=>{const k=nt(v);return(/^\d (EMITENTE|DESTINATARIO|REMETENTE|TERCEIROS|SEM)/.test(k)||/^(CIF|FOB)$/.test(k))?'':String(v||'').trim()},
+  ST=new Set(['LTDA','ME','EPP','EIRELI','SA','S','A','DE','DA','DO','DOS','DAS','E','COLETA','COLETAS','TRANSPORTE','TRANSPORTES','TRANSPORTADORA','TRANSP','LOGISTICA','SERVICOS','CIA','EXPRESSO']),
+  tk=v=>nt(v).split(' ').filter(w=>w&&!ST.has(w)),
+  sub=(a,b)=>{const x=tk(a),y=tk(b);if(!x.length||!y.length)return like(a,b);const[s1,l1]=x.length<=y.length?[x,y]:[y,x];return s1.every(w=>l1.includes(w))},
+  tn=tc(n.transp),pt=String(p.transp||'').trim();
+  if(!pt||/^(O MESMO|MESMO|PROPRI[OA]|FORNECEDOR)\b/.test(nt(pt)))add('Transportadora','ok',pt?'Pedido indica “'+pt+'” — sem transportadora específica para conferir':'Pedido sem transportadora informada — não conferida');
+  else if(tn)add('Transportadora',sub(pt,tn)?'ok':'er',`Pedido: ${pt} | Nota: ${tn}`);
+  else{const w=nt(n.infCpl).split(' '),tp=tk(pt),inf=tp.length&&tp.every(x=>w.includes(x));
+   add('Transportadora',inf?'ok':'er',inf?`Pedido: ${pt} | Nota: sem transportadora no campo próprio, mas consta nas informações complementares`:`Pedido: ${pt} | Nota: transportadora não informada${n.transp?' (campo traz “'+n.transp+'”)':''}`)}
+  if(trs.length&&tn)add('Transportadora cadastrada',trs.some(x=>like(x,tn))?'ok':'er',tn+(trs.some(x=>like(x,tn))?' consta no cadastro':' não consta no cadastro'))}
+ const uf=nt(n.uf).slice(0,2),bc=num(n.vBC),ic=num(n.vICMS),pi=ic/bc*100,alvo=uf=='BA'||uf=='RN'?[7]:uf=='PR'?[19.5,12]:[12];
+ if(!uf||!isFinite(pi))miss('ICMS (valor ÷ base)','Informe UF, base e valor do ICMS');else add('ICMS (valor ÷ base)',alvo.some(a=>eq(pi,a,.06))?'ok':'er',`UF ${uf}: calculado ${pc(pi)} | esperado ${uf=='PR'?'19,5% (ou 12,00% efetivo após diferimento de 38,45%)':pc(alvo[0])}`);
+ const b0=num(n.vProd),b=b0-(cfg.dsc&&isFinite(ic)?ic:0);
+ [['IPI','vIPI',5.2],['PIS','vPIS',.65],['COFINS','vCOFINS',3]].forEach(([nm,k,a])=>{const x=num(n[k])/(k=='vIPI'?b0:b)*100;if(!isFinite(x))miss(nm+' sobre a base','Informe valor dos produtos e '+nm);else add(nm+' sobre '+(k=='vIPI'||!cfg.dsc?'o valor dos produtos':'a base sem ICMS'),eq(x,a,.05)?'ok':'er',`Calculado ${pc(x)} | esperado ${pc(a)}`)});
+ const inf=nt(n.infCpl),pn=nt(p.numero);add('Info. complementares referenciam o pedido',!pn||!inf?'wa':inf.includes(pn)?'ok':'er',`Pedido ${p.numero||'—'}`);
+ if(uf=='PR')add('Diferimento do ICMS (PR) nas info. complementares',!inf?'wa':/DIFERIMENT/.test(inf)?'ok':'er','Procura a palavra “diferimento”');
+ return C}
+const SEED=[{c:'',p:'COL-100',m:'NBR',v:'4,78'},{c:'',p:'COL-150',m:'NBR',v:'6,61'},{c:'',p:'COL-200',m:'NBR',v:'10,05'},{c:'',p:'COL-250',m:'NBR',v:'15,36'},{c:'',p:'COL-300',m:'NBR',v:'27,24'},{c:'',p:'COL-350',m:'NBR',v:'41,50'},{c:'',p:'COL-400',m:'NBR',v:'54,50'},{c:'',p:'DEFOFO-100',m:'EPDM',v:'8,93'},{c:'',p:'DEFOFO-100',m:'NBR',v:'8,35'},{c:'',p:'DEFOFO-150',m:'EPDM',v:'13,00'},{c:'',p:'DEFOFO-150',m:'NBR',v:'11,18'},{c:'',p:'DEFOFO-200',m:'EPDM',v:'20,82'},{c:'',p:'DEFOFO-200',m:'NBR',v:'19,00'},{c:'',p:'DEFOFO-250',m:'EPDM',v:'31,33'},{c:'',p:'DEFOFO-250',m:'NBR',v:'29,20'},{c:'',p:'DEFOFO-300',m:'EPDM',v:'50,90'},{c:'',p:'DEFOFO-300',m:'NBR',v:'47,22'},{c:'',p:'PBA-50',m:'EPDM',v:'3,98'},{c:'',p:'PBA-50',m:'NBR',v:'3,70'},{c:'',p:'PBA-75',m:'EPDM',v:'6,00'},{c:'',p:'PBA-75',m:'NBR',v:'5,50'},{c:'',p:'PBA-100',m:'EPDM',v:'7,75'},{c:'',p:'PBA-100',m:'NBR',v:'6,70'}];
+const mat=s=>{s=nt(s);return /EPDM/.test(s)?'EPDM':/NBR|NITRIL/.test(s)?'NBR':''},ML={EPDM:'EPDM',NBR:'Nitrílica (NBR)','':'—'};
+function pl(t){return String(t||'').split(/\r?\n/).map(l=>l.split(/;|\t/).map(x=>x.trim())).filter(x=>x.length>1&&x[0]).map(x=>x.length>=4?{c:x[0],p:x[1],m:mat(x[2]),v:x[3]}:x.length==3?(/^(EPDM|NBR|NITR\S*)$/i.test(x[1])?{c:'',p:x[0],m:mat(x[1]),v:x[2]}:{c:x[0],p:x[1],m:'',v:x[2]}):{c:'',p:x[0],m:'',v:x[1]}).filter(r=>r.p&&isFinite(num(r.v)))}
+let prods=ld('vn_prod',[]),trs=ld('vn_trs',[]),edi=-1;
+const key=r=>nt(r.c)+'|'+nt(r.p)+'|'+(r.m||'');
+if(!ld('vn_seed1',0)){SEED.forEach(r=>{if(!prods.some(x=>key(x)==key(r)))prods.push(r)});sv('vn_prod',prods);sv('vn_seed1',1)}
+const kind=s=>{s=nt(s);const m=s.match(/(\d{2,3})\s*MM/)||s.match(/\b(\d{2,3})\b/);return{t:/COLETOR|\bCOL\b/.test(s)?'COL':/DEFOFO|\bDEF\b/.test(s)?'DEFOFO':/\bPBA\b/.test(s)?'PBA':'',z:m?m[1]:'',m:mat(s)}};
+function findProd(d,cl){const k=kind(d);if(k.t=='COL'){if(k.m=='EPDM')return'colepdm';k.m='NBR'}const c=prods.filter(r=>{const q=kind(r.p);return(k.t&&q.t==k.t&&q.z==k.z)||like(d,r.p)}),mm=c.filter(r=>!k.m||!r.m||r.m==k.m);
+ if(!k.m&&new Set(mm.map(r=>r.m||'')).size>1)return'amb';
+ return mm.find(r=>r.c&&like(r.c,cl))||mm.find(r=>!r.c)||null}
+function cad(){const q=nt($('pq').value);
+ $('pb').innerHTML=prods.map((r,i)=>[r,i]).filter(([r])=>!q||nt(r.c+' '+r.p+' '+(r.m||'')).includes(q)).map(([r,i])=>`<tr><td>${esc(r.c)||'<span class=hint>todos</span>'}</td><td>${esc(r.p)}</td><td>${ML[r.m||'']}</td><td>${brl(num(r.v))}</td><td style=white-space:nowrap><button class='b s' onclick='editProd(${i})'>Editar</button><button class='b s' onclick='delProd(${i})'>Excluir</button></td></tr>`).join('')||'<tr><td colspan=5 class=hint>Nenhum produto cadastrado.</td></tr>';
+ $('tb2').innerHTML=trs.map((t,i)=>`<tr><td>${esc(t)}</td><td><button class='b s' onclick='delTr(${i})'>Excluir</button></td></tr>`).join('')||'<tr><td colspan=2 class=hint>Nenhuma transportadora cadastrada.</td></tr>';cxCad()}
+function addProd(){const c=$('pc').value.trim(),p=$('pp').value.trim(),v=$('pv').value.trim(),m=$('pm').value;if(!p||!isFinite(num(v))){alert('Informe a peça e um preço válido.');return}
+ const r={c,p,m,v};if(edi>=0)prods[edi]=r;else{const i=prods.findIndex(x=>key(x)==key(r));if(i>=0)prods[i]=r;else prods.push(r)}
+ sv('vn_prod',prods);clrProd();cad()}
+function clrProd(){edi=-1;$('pc').value=$('pp').value=$('pv').value=$('pm').value=''}
+function editProd(i){const r=prods[i];edi=i;$('pc').value=r.c;$('pp').value=r.p;$('pv').value=r.v;$('pm').value=r.m||'';scrollTo(0,0)}
+function delProd(i){if(!confirm('Excluir este produto?'))return;prods.splice(i,1);sv('vn_prod',prods);cad()}
+function impProd(){const l=pl($('pbulk').value);if(!l.length){alert('Nada para importar. Use: cliente;peça;material;preço');return}l.forEach(r=>{const i=prods.findIndex(x=>key(x)==key(r));if(i>=0)prods[i]=r;else prods.push(r)});sv('vn_prod',prods);$('pbulk').value='';cad();alert(l.length+' produto(s) importado(s).')}
+function expProd(){saveFile('produtos-vitalbor.csv','\ufeffcliente;peca;material;preco\n'+prods.map(r=>[r.c,r.p,r.m||'',r.v].join(';')).join('\n'))}
+function addTr(){const t=$('tn').value.trim();if(!t)return;if(!trs.some(x=>nt(x)==nt(t)))trs.push(t);trs.sort((a,b)=>a.localeCompare(b));sv('vn_trs',trs);$('tn').value='';cad()}
+function delTr(i){if(!confirm('Excluir esta transportadora?'))return;trs.splice(i,1);sv('vn_trs',trs);cad()}
+function impTr(){$('tbulk').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).forEach(t=>{if(!trs.some(x=>nt(x)==nt(t)))trs.push(t)});trs.sort((a,b)=>a.localeCompare(b));sv('vn_trs',trs);$('tbulk').value='';cad()}
+function expTr(){saveFile('transportadoras-vitalbor.csv','\ufefftransportadora\n'+trs.join('\n'))}
+const same=(a,b)=>{const x=kind(a),y=kind(b);return x.t&&y.t?x.t==y.t&&x.z==y.z&&(!x.m||!y.m||x.m==y.m):like(String(a).replace(/\(.*?\)/g,''),String(b).replace(/\(.*?\)/g,''))};
+function parseDanfe(L){const o={},T=L.join('\n'),mny=l=>l.match(/\d{1,3}(?:\.\d{3})*,\d{2}/g)||[],nx=(re,f)=>L.findIndex((l,k)=>k>=(f||0)&&re.test(l));let m=T.match(/N[º°o]\.?\s*(\d{1,3}(?:\.\d{3})*)\b/i);if(m)o.nNF=m[1].replace(/\./g,'');
+ let i=nx(/NATUREZA DA OPERA/i);if(i>=0)o.natOp=(L[i+1]||'').split(/\s+\d{8,}/)[0].trim();
+ const d=nx(/^DESTINAT[ÁA]RIO\s*\/\s*REMETENTE/i);if(d>=0){const j=nx(/RAZ[ÃA]O SOCIAL/i,d);if(j>=0){const l=L[j+1]||'';o.cliente=l.split(/\s+\d{2}\.\d{3}\.\d{3}\/|\s+\d{3}\.\d{3}\.\d{3}-/)[0].trim();m=l.match(/(\d{2}\/\d{2}\/\d{4})/);if(m)o.emissao=m[1]}
+  const k=nx(/MUNIC[ÍI]PIO/i,d);if(k>=0){m=(L[k+1]||'').match(/\b([A-Z]{2})\s+\(?\d{2}/);if(m)o.uf=m[1]}}
+ m=T.match(/Venc\.?\s*(\d{2}\/\d{2}\/\d{4})/i);if(m)o.venc1=m[1];
+ const c=nx(/C[ÁA]LCULO DO IMPOSTO/i),tr=nx(/TRANSPORTADOR/i,Math.max(c,0));
+ if(c>=0){const rows=L.slice(c,tr>c?tr:c+12).map(mny).filter(r=>r.length>=7);if(rows[0]){o.vBC=rows[0][0];o.vICMS=rows[0][1];o.vPIS=rows[0][5];o.vProd=rows[0][6]}if(rows[1]){o.vIPI=rows[1][4];o.vCOFINS=rows[1][5]}}
+ if(tr>=0){const j=nx(/RAZ[ÃA]O SOCIAL/i,tr);if(j>=0)o.transp=(L[j+1]||'').split(/\s+\(\d\)|\s+\d{2}\.\d{3}\.\d{3}\//)[0].trim();if(/^\(\d\)/.test(o.transp))o.transp=''}
+ if(tr>=0){const v=nx(/PESO BRUTO/i,tr);if(v>=0){const l=L[v+1]||'',mm=l.match(/^(\d+)\s/),ns=l.match(/\d{1,3}(?:\.\d{3})*,\d{2,3}/g)||[];if(mm)o.volumes=mm[1];if(ns.length>=2){o.peso=ns[ns.length-2];o.pesoL=ns[ns.length-1]}}}
+ const it=[];L.forEach(l=>{const x=l.match(/^(.+?)\s+\d{8}\s+\d{2,3}\s+\d{4}\s+[A-Z]{1,4}\s+([\d.]+(?:,\d+)?)\s+([\d.]*\d,\d{2,4})\s+([\d.]*\d,\d{2})/);if(x)it.push([x[1].trim(),/,/.test(x[2])?x[2]:x[2].replace(/\./g,''),x[3],x[4]].join(';'))});o.itens=it.join('\n');
+ const q=nx(/INFORMA[ÇC][ÕO]ES COMPLEMENTARES/i);if(q>=0)o.infCpl=L.slice(q+1).join(' ').slice(0,1500);return o}
+const SEEDCX=[['COL-100',650,'Grande',42],['COL-150',540,'Grande',62],['COL-200',300,'Grande',92],['COL-250',145,'Grande',172],['COL-300',80,'Grande',246],['COL-400',44,'Grande',434],['DEFOFO-100',330,'Média',83],['DEFOFO-150',250,'Grande',126],['DEFOFO-200',130,'Grande',286],['DEFOFO-250',85,'Grande',387],['DEFOFO-300',60,'Grande',590],['PBA-50',1250,'Média',30],['PBA-75',640,'Grande',46],['PBA-100',420,'Grande',68],['PBA-140',150,'Grande',146],['PBA-200','','Grande',192]];
+let cxs=ld('vn_cx',[]),cxp=ld('vn_cxp',{'Média':1038,'Grande':2200}),cxe=-1;
+if(!ld('vn_seed_cx1',0)){cxs=SEEDCX.map(([p,q,t,g])=>({p,q:String(q),t,g:String(g)}));sv('vn_cx',cxs);sv('vn_cxp',cxp);sv('vn_seed_cx1',1)}
+const inum=s=>{s=String(s==null?'':s).replace(/\s/g,'').replace(/\./g,'').replace(',','.');return parseFloat(s)},cxKey=p=>{const k=kind(p);return k.t+'-'+k.z},fkg=x=>x.toFixed(2).replace('.',',')+' kg';
+function cxFind(d){const k=kind(d);if(!k.t||!k.z)return null;return cxs.find(r=>{const q=kind(r.p);return q.t==k.t&&q.z==k.z})||null}
+function volChecks(N,n,add,miss){
+ if(!N.length){miss('Volumes (caixas)','Preencha os itens da nota');return}
+ let fr=0,cs=0,liq=0,cxg=0;const mis=[],L=[];
+ N.forEach(([d,q])=>{const qt=num(q),r=cxFind(d),pq=r?inum(r.q):NaN,nm=String(d).replace(/\(.*?\)/g,'').trim();
+  if(!r||!(pq>0)||!isFinite(qt)){mis.push(nm+(r?': sem quantidade por caixa':': sem caixa cadastrada'));return}
+  const b=qt/pq,c=Math.ceil(b-1e-9);fr+=b;cs+=c;liq+=qt*(inum(r.g)||0);cxg+=c*(inum(cxp[r.t])||0);
+  L.push(`${nm}: ${qt} ÷ ${pq} = ${b.toFixed(2).replace('.',',')} → ${c} cx`)});
+ const mn=Math.ceil(fr-1e-9),vn=num(n.volumes),esp=mn==cs?String(cs):mn+' a '+cs;
+ if(mis.length){add('Volumes (caixas)','wa','Faltam dados em Cadastros › Peças por caixa: '+mis.join(' · '));return}
+ if(!isFinite(vn))add('Volumes (caixas)','wa','Informe os volumes da nota. Esperado: '+esp+' — '+L.join(' · '));
+ else add('Volumes (caixas)',vn>=mn&&vn<=cs?'ok':'er',`Esperado ${esp} caixa(s)${mn!=cs?' (mín. com sobras juntas, máx. uma caixa por peça)':''} | Nota: ${vn} — ${L.join(' · ')}`);
+ const lk=liq/1000,cb=isFinite(vn)&&cs?cxg/cs*vn:cxg,bk=lk+cb/1000,pb=num(n.peso),pl2=num(n.pesoL),tl=.03;
+ if(isFinite(pb))add('Peso bruto (peças + caixas)',eq(pb,bk,bk*tl)?'ok':'er',`Esperado ≈ ${fkg(bk)} (peças ${fkg(lk)} + papelão ${fkg(cb/1000)}), tolerância 3% | Nota: ${fkg(pb)}`);
+ if(isFinite(pl2))add('Peso líquido (peças)',eq(pl2,lk,lk*tl)?'ok':'er',`Esperado ≈ ${fkg(lk)}, tolerância 3% | Nota: ${fkg(pl2)}`)}
+function cxCad(){$('xm').value=cxp['Média']??'';$('xl').value=cxp.Grande??'';
+ $('xb').innerHTML=cxs.map((r,i)=>`<tr><td>${esc(r.p)}</td><td>${r.q?inum(r.q).toLocaleString('pt-BR'):'<span class=hint>—</span>'}</td><td>${esc(r.t)}</td><td>${esc(r.g)||'—'}</td><td>${r.q&&r.g?(inum(r.q)*inum(r.g)/1000).toLocaleString('pt-BR',{maximumFractionDigits:3}):'—'}</td><td style=white-space:nowrap><button class='b s' onclick='editCx(${i})'>Editar</button><button class='b s' onclick='delCx(${i})'>Excluir</button></td></tr>`).join('')||'<tr><td colspan=6 class=hint>Nenhuma peça cadastrada.</td></tr>'}
+function cxpSave(){cxp['Média']=inum($('xm').value)||0;cxp.Grande=inum($('xl').value)||0;sv('vn_cxp',cxp)}
+function addCx(){const p=$('xp').value.trim(),q=$('xq').value.trim(),g=$('xg').value.trim(),k=kind(p);if(!p||!k.t||!k.z){alert('Informe a peça no formato COL-100, DEFOFO-100 ou PBA-50.');return}
+ const r={p,q:q&&isFinite(inum(q))?String(inum(q)):'',t:$('xt').value,g:g&&isFinite(inum(g))?String(inum(g)):''};
+ if(cxe>=0)cxs[cxe]=r;else{const i=cxs.findIndex(x=>cxKey(x.p)==cxKey(p));if(i>=0)cxs[i]=r;else cxs.push(r)}
+ sv('vn_cx',cxs);clrCx();cxCad()}
+function clrCx(){cxe=-1;$('xp').value=$('xq').value=$('xg').value='';$('xt').value='Grande'}
+function editCx(i){const r=cxs[i];cxe=i;$('xp').value=r.p;$('xq').value=r.q;$('xt').value=r.t;$('xg').value=r.g;$('xp').scrollIntoView({behavior:'smooth',block:'center'})}
+function delCx(i){if(!confirm('Excluir esta peça?'))return;cxs.splice(i,1);sv('vn_cx',cxs);cxCad()}
+function impCx(){const l=$('xbulk').value.split(/\r?\n/).map(x=>x.split(/;|\t/).map(y=>y.trim())).filter(x=>x[0]&&kind(x[0]).t&&kind(x[0]).z);if(!l.length){alert('Nada para importar. Use: peça;qtd por caixa;caixa;peso em g');return}
+ l.forEach(([p,q,t,g])=>{const r={p,q:q&&isFinite(inum(q))?String(inum(q)):'',t:/^MED/.test(nt(t))?'Média':'Grande',g:g&&isFinite(inum(g))?String(inum(g)):''},i=cxs.findIndex(x=>cxKey(x.p)==cxKey(p));if(i>=0)cxs[i]=r;else cxs.push(r)});
+ sv('vn_cx',cxs);$('xbulk').value='';cxCad();alert(l.length+' peça(s) importada(s).')}
+function expCx(){saveFile('pecas-por-caixa-vitalbor.csv','\ufeffpeca;qtd_por_caixa;caixa;peso_peca_g\n'+cxs.map(r=>[r.p,r.q,r.t,r.g].join(';')).join('\n'))}
+
+// ===== COTAÇÃO =====
+const CF=[['cnpj','CNPJ'],['nome','Razão social',1],['ie','Inscrição Estadual'],['tel','Telefone'],['email','E-mail'],['end','Endereço',1],['bairro','Bairro'],['cidade','Cidade'],['uf','UF'],['cep','CEP']];
+let cit=[],cots=ld('vn_cots',[]),clis=ld('vn_cli',[]),eqt=ld('vn_eq',''),rgt=ld('vn_rg',''),cotN=ld('vn_cotn',1);
+const r2=x=>Math.round((x+Number.EPSILON)*100)/100,mny=(v,d=2)=>isFinite(v)?v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}):'-',
+ addD=(s,n)=>{const x=new Date(s+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)},
+ hoje=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')},
+ fcnpj=s=>{const d=String(s).replace(/\D/g,'');return d.length==14?d.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,'$1.$2.$3/$4-$5'):s};
+function cod(r){const k=kind(r.p),t={COL:'COL',DEFOFO:'DEF',PBA:'PBA'}[k.t];return(t?t+'-'+k.z:r.p)+(r.m?' '+r.m:'')}
+function pdesc(r){const k=kind(r.p),t={COL:'COL. ESG.',DEFOFO:'DEFOFO',PBA:'PBA'}[k.t];return(t?'ANEL DE BORRACHA JEI '+t+' '+k.z+'MM':r.p)+(r.m?' - '+r.m:'')}
+function eqMap(){const M=[];eqt.split(/\r?\n/).forEach(l=>{const p=l.split('=').map(x=>x.trim()).filter(Boolean);if(p.length>1)p.slice(1).forEach(a=>M.push([nt(a),p[0]]))});return M.sort((a,b)=>b[0].length-a[0].length)}
+function byRef(ref,d){const k=kind(ref),m=k.m||mat(d);if(!k.t||!k.z)return[];const c=prods.map((r,i)=>[r,i]).filter(([r])=>{const q=kind(r.p);return q.t==k.t&&q.z==k.z&&(!m||!r.m||r.m==m)});return new Set(c.map(x=>x[0].m||'')).size>1?[]:c.map(x=>x[1])}
+const pickC=(c,cl)=>c.find(i=>prods[i].c&&like(prods[i].c,cl))??c.find(i=>!prods[i].c)??c[0];
+function cotMatch(d,cl){const n=' '+nt(d)+' ',a=eqMap().find(x=>n.includes(' '+x[0]+' '));if(a){const c=byRef(a[1],d);if(c.length)return pickC(c,cl)}
+ const r=findProd(d,cl);return r&&typeof r=='object'?prods.indexOf(r):-1}
+function learn(d,pi){const ref=cod(prods[pi]),n=nt(d);if(!n||eqMap().some(x=>x[0]==n))return;const L=eqt.split(/\r?\n/).filter(Boolean),i=L.findIndex(l=>nt(l.split('=')[0])==nt(ref));if(i>=0)L[i]+=' = '+d;else L.push(ref+' = '+d);eqt=L.join('\n');sv('vn_eq',eqt);$('ceq').value=eqt}
+function cotRule(uf,cid){const U=nt(uf).slice(0,2),C=nt(cid),o={icms:U=='BA'||U=='RN'?7:12,ipi:5.2,pis:.65,cof:3,src:'padrão '+(U||'—')+(U=='PR'?' (19,5% com diferimento de 38,45% ≈ 12%)':'')};let best=null,bs=-1;
+ (rgt||'').split(/\r?\n/).forEach(l=>{const x=l.split(';').map(v=>v.trim());if(x.length<3||nt(x[0]).slice(0,2)!=U)return;const sc=x[1]?(nt(x[1])==C?2:-1):1;if(sc>bs){bs=sc;best=x}});
+ if(best){[['icms',2],['ipi',3],['pis',4],['cof',5]].forEach(([k,i])=>{const v=num(best[i]);if(isFinite(v))o[k]=v});o.src='regra '+best[0]+(best[1]?' / '+best[1]:'')}return o}
+function cotCalc(){const cl=get('c',CF),R=cotRule(cl.uf,cl.cidade);let sub=0;
+ const L=cit.map(it=>{const p=prods[it.pi],q=inum(it.q),u=p?num(p.v):NaN,tot=p&&q>0?r2(q*u):NaN;if(isFinite(tot))sub+=tot;let nota='';
+  if(p){const x=cxFind(p.p),pq=x?inum(x.q):NaN;if(pq>0&&q>0){const f=Math.floor(q/pq+1e-9),re=Math.round(q-f*pq);nota=f?`${f} cx de ${pq}${re?' + '+re+' pç':''}`:`${re} pç (menos de 1 cx de ${pq})`}}
+  return{it,p,q,u,tot,nota}});
+ sub=r2(sub);const icms=r2(sub*R.icms/100),ipi=r2(sub*R.ipi/100),b=sub-(cfg.dsc?icms:0);return{cl,R,L,sub,icms,ipi,pis:r2(b*R.pis/100),cof:r2(b*R.cof/100),total:r2(sub+ipi)}}
+function cotR(){const c=cotCalc();
+ $('cib').innerHTML=c.L.map((x,i)=>`<tr><td><input value="${esc(x.it.d)}" onchange="cit[${i}].d=this.value;cotR()"></td><td><select onchange="cotSel(${i},this.value)"><option value="-1">— escolher —</option>${prods.map((r,k)=>`<option value="${k}"${k==x.it.pi?' selected':''}>${esc(cod(r))}${r.c?' ('+esc(r.c)+')':''} · ${brl(num(r.v))}</option>`).join('')}</select></td><td><input style="width:84px" value="${esc(x.it.q)}" onchange="cit[${i}].q=this.value;cotR()"></td><td class="hint">${esc(x.nota||(x.p?'sem caixa cadastrada':''))}</td><td>${isFinite(x.u)?brl(x.u):'—'}</td><td>${isFinite(x.tot)?brl(x.tot):'—'}</td><td><button class="b s" onclick="cit.splice(${i},1);cotR()">×</button></td></tr>`).join('')||'<tr><td colspan="7" class="hint">Anexe o PDF do pedido ou clique em + Item.</td></tr>';
+ const R=c.R;$('cts').innerHTML=`<div class="sc"><table style="max-width:560px;margin-top:10px"><tbody><tr><td>Subtotal dos produtos</td><td>${brl(c.sub)}</td></tr><tr><td>IPI (${pc(R.ipi)})</td><td>${brl(c.ipi)}</td></tr><tr><td><b>Total da cotação</b> (subtotal + IPI)</td><td><b>${brl(c.total)}</b></td></tr><tr><td class="hint">ICMS (${pc(R.icms)}) — já está no preço</td><td class="hint">${brl(c.icms)}</td></tr><tr><td class="hint">PIS (${pc(R.pis)}) — já está no preço</td><td class="hint">${brl(c.pis)}</td></tr><tr><td class="hint">COFINS (${pc(R.cof)}) — já está no preço</td><td class="hint">${brl(c.cof)}</td></tr></tbody></table></div><p class="hint">Regra aplicada: ${esc(R.src)}</p>`}
+function cotSel(i,v){v=+v;cit[i].pi=v;if(v>=0&&cit[i].d)learn(cit[i].d,v);cotR()}
+function cotCli(L){const o={},T=L.join('\n'),re=/\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}/g;let m,ix=-1;
+ while((m=re.exec(T)))if(m[0].replace(/\D/g,'')!='39984339000105'){o.cnpj=fcnpj(m[0]);ix=m.index;break}
+ const S=ix>=0?T.slice(ix):T,g=r=>{const x=S.match(r);return x?x[1].trim():''};
+ o.ie=g(/Inscri[çc][ãa]o\s+Estadual:?\s*([\w./-]+)/i);o.tel=g(/Telefone:?\s*([\d()\s.-]{8,20}?)(?=\s*(?:E-?mail|Cidade|Endere|Bairro|\n|$))/i);
+ o.email=(S.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/)||[''])[0];o.end=g(/Endere[çc]o:?\s*(.+?)(?=\s+(?:Bairro|Cidade|CEP):|\s*$)/im);o.bairro=g(/Bairro:?\s*(.+?)(?=\s+(?:Cidade|CEP|Endere[çc]o):|\s*$)/im);
+ m=S.match(/Cidade:?\s*(.+?)\s*[-\/]\s*([A-Z]{2})\b/);if(m){o.cidade=m[1].trim();o.uf=m[2]}o.cep=g(/CEP:?\s*(\d{5}-?\d{3})/i);
+ const li=o.cnpj?L.findIndex(l=>l.includes(o.cnpj.slice(0,10))):-1,ok=x=>x.length>7&&/\s/.test(x)&&!/INFORMA|CLIENTE\s*$|ITENS|PEDIDO|CNPJ|FORNECEDOR/i.test(x)&&!OWN.test(nt(x))&&x==x.toUpperCase();
+ for(let k=li-1;li>0&&k>=Math.max(0,li-4)&&!o.nome;k--)if(ok(L[k]))o.nome=L[k].trim();
+ if(!o.nome){const x=T.match(/(?:CLIENTE|RAZ[ÃA]O SOCIAL)\s*:\s*(.+)/i);if(x&&!OWN.test(nt(x[1])))o.nome=x[1].trim()}return o}
+function cotIt(L,I){const o=[],re=/^(.*?)\s+([\d.]*\d(?:,\d+)?)\s*(?:UN|UND|UNID|PC|PÇ|PCS|CX)?\s+([\d.]*\d,\d{2,4})\s+([\d.]*\d,\d{2})$/i;
+ L.forEach(l=>{const m=l.trim().match(re);if(!m||!/[A-Za-zÀ-ú]{3}/.test(m[1]))return;const q=num(m[2]),u=num(m[3]),t=num(m[4]);if(q>0&&Math.abs(q*u-t)<=Math.max(.05,t*.02))o.push([m[1].replace(/\b\d{4}\.\d{2}\.\d{2}\b/,'').replace(/\s+/g,' ').trim(),String(q)])});
+ if(!o.length)parseTable(I).forEach(s=>{const x=s.split(';');if(num(x[1])>0)o.push([x[0],String(num(x[1]))])});return o}
+function cotReg(save){const c=get('c',CF),d=c.cnpj.replace(/\D/g,'');if(!d)return;const i=clis.findIndex(x=>x.cnpj.replace(/\D/g,'')==d);
+ if(i>=0)CF.forEach(([k])=>{if(!c[k]&&clis[i][k])$('c_'+k).value=clis[i][k]});
+ $('cst').textContent=i>=0?'Cliente já cadastrado.':save?'Cliente novo cadastrado automaticamente.':'Cliente novo — será cadastrado ao salvar.';
+ if(save&&c.nome){const c2=get('c',CF);if(i>=0)clis[i]=c2;else clis.push(c2);sv('vn_cli',clis);cotL()}}
+async function cotLoad(i){const f=i.files[0],e=$('ce');if(!f)return;e.innerHTML='<p class="hint">Lendo o PDF...</p>';
+ try{const I=await pdfRaw(await f.arrayBuffer()),L=toLines(I);if(!L.length)throw 1;const c=cotCli(L);CF.forEach(([k])=>{if(c[k])$('c_'+k).value=c[k]});cotReg(1);
+  const nm=$('c_nome').value;cit=cotIt(L,I).map(([d,q])=>({d,q,pi:cotMatch(d,nm)}));cotR();const sem=cit.filter(x=>x.pi<0).length;
+  e.innerHTML=`<p class="hint" style="color:var(--${cit.length?(sem?'wa':'ok'):'er'})">${cit.length?cit.length+' item(ns) lido(s)'+(sem?'; '+sem+' sem produto vinculado, escolha na lista abaixo.':', todos vinculados ao cadastro.'):'Não achei os itens no PDF. Use + Item.'} Confira os campos.</p>`}
+ catch(x){e.innerHTML='<p class="hint" style="color:var(--er)">Não consegui ler o PDF (pode ser imagem/escaneado). Digite os dados.</p>'}}
+function cotParc(r){const dias=(String(r.prazo).match(/\d+/g)||['30']).map(Number),n=dias.length,v=r2(r.t.total/n);return dias.map((d,i)=>({n:i+1,v:addD(r.fat,d),val:i==n-1?r2(r.t.total-v*(n-1)):v}))}
+function cotSave(){const c=cotCalc(),cl=c.cl;if(!cl.nome||!cl.cnpj){alert('Informe a razão social e o CNPJ do cliente.');return}
+ if(!c.L.length||c.L.some(x=>!x.p||!(x.q>0))){alert(c.L.length?'Há item sem produto cadastrado ou sem quantidade. Escolha o produto na lista.':'Nenhum item na cotação.');return}
+ cotReg(1);const n=$('k_num').value.trim()||String(cotN),rec={id:Date.now(),data:new Date().toISOString(),num:n,cl,prazo:$('k_prazo').value.trim()||'30',fat:$('k_fat').value||hoje(),vend:$('k_vend').value.trim(),
+  itens:c.L.map(x=>({cod:cod(x.p),desc:pdesc(x.p),q:x.q,u:x.u,tot:x.tot,nota:x.nota})),t:{sub:c.sub,ipi:c.ipi,icms:c.icms,pis:c.pis,cof:c.cof,total:c.total,R:c.R}};
+ cots.unshift(rec);if(parseInt(n)>=cotN)cotN=parseInt(n)+1;sv('vn_cots',cots);sv('vn_cotn',cotN);sv('vn_vend',rec.vend);$('k_num').value=cotN;cotL();cotPdf(rec)}
+function cotNew(){cit=[];[...document.querySelectorAll('#cf input')].forEach(e=>e.value='');$('ce').innerHTML='';$('cst').textContent='';cotR()}
+function cotL(){$('clb').innerHTML=cots.map((r,i)=>`<tr><td>${esc(r.num)}</td><td>${new Date(r.data).toLocaleDateString('pt-BR')}</td><td>${esc(r.cl.nome)}</td><td>${brl(r.t.total)}</td><td style="white-space:nowrap"><button class="b s" onclick="cotPdf(cots[${i}])">PDF</button><button class="b s" onclick="cotDel(${i})">Excluir</button></td></tr>`).join('')||'<tr><td colspan="5" class="hint">Nenhuma cotação salva.</td></tr>';
+ $('cub').innerHTML=clis.map((c,i)=>`<tr><td>${esc(c.nome)}</td><td>${esc(c.cnpj)}</td><td>${esc(c.cidade)}${c.uf?' - '+esc(c.uf):''}</td><td style="white-space:nowrap"><button class="b s" onclick="cotUse(${i})">Usar</button><button class="b s" onclick="cotDelCli(${i})">Excluir</button></td></tr>`).join('')||'<tr><td colspan="4" class="hint">Nenhum cliente cadastrado.</td></tr>';cotSelCli()}
+function cotDel(i){if(confirm('Excluir esta cotação?')){cots.splice(i,1);sv('vn_cots',cots);cotL()}}
+function cotDelCli(i){if(confirm('Excluir este cliente?')){clis.splice(i,1);sv('vn_cli',clis);cotL()}}
+function cotUse(i){CF.forEach(([k])=>$('c_'+k).value=clis[i][k]||'');cotReg();cotR();scrollTo(0,0)}
+function cotInit(){if(!$('cf').innerHTML){$('cf').innerHTML=CF.map(([k,l,f])=>fld('c',[k,l,'t',f])).join('');$('cf').addEventListener('change',()=>{cotReg();cotR()})}
+ $('k_num').value=$('k_num').value||cotN;$('k_prazo').value=$('k_prazo').value||'30';$('k_fat').value=$('k_fat').value||hoje();$('k_vend').value=$('k_vend').value||ld('vn_vend','Cibelly Mendes');$('ceq').value=eqt;$('crg').value=rgt;cotR();cotL()}
+function cotPdf(r){if(!window.jspdf){alert('A biblioteca de PDF não carregou. Recarregue a página.');return}
+ const doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),W=210,M=11,X=W-M,OR=[255,176,80],PE=[255,240,224],DK=[30,30,30],C=r.cl,t=r.t,d=new Date(r.data);let y;
+ const T=(s,x,yy,b,sz,a,c)=>{doc.setFont('helvetica',b?'bold':'normal');doc.setFontSize(sz||9);doc.setTextColor(...(c||DK));doc.text(String(s),x,yy,a?{align:a}:undefined)},
+  LV=(l,v,x,yy)=>{T(l+':',x,yy,1,9);T(v||'',x+doc.getTextWidth(l+': '),yy,0,9)};
+ try{const im=$('logo').querySelector('img'),k=im.naturalWidth/im.naturalHeight;doc.addImage(im,'PNG',M,11,11*k,11)}catch(e){}
+ T('VITALBOR INDUSTRIA E COMERCIO DE',X,15,1,11,'right',[40,40,40]);T('ARTEFATOS DE BORRACHA LTDA',X,20.5,1,11,'right',[40,40,40]);
+ ['CNPJ: 39.984.339/0001-05','Inscrição Estadual: 9087233500','AVENIDA LUIZ CARLOS ZANI, 3495','PARQUE INDUSTRIAL V','Ibiporã - PR - CEP: 86200-000','Telefone: (43) 99945-6555'].forEach((s,i)=>T(s,X,28+i*3.7,0,8,'right'));
+ T('Cotação Nº '+r.num,M,36,1,15);T('Informações do Cliente',M,54,1,11);T(C.nome,M,61,1,10);
+ [['CNPJ',C.cnpj],['Inscrição Estadual',C.ie],['Telefone',C.tel],['E-mail',C.email]].forEach(([l,v],i)=>LV(l,v,M,66.5+i*5));
+ [['Endereço',C.end],['Bairro',C.bairro],['Cidade',(C.cidade||'')+(C.uf?' - '+C.uf:'')+(C.cep?' - CEP: '+C.cep:'')]].forEach(([l,v],i)=>LV(l,v,106,66.5+i*5));
+ T('Itens da Cotação',M,95,1,11);y=100;
+ const th=()=>{doc.setFillColor(...OR);doc.rect(M,y-3.2,X-M,4.4,'F');T('Código',M+1,y,1,7,0,[255,255,255]);T('Descrição',30,y,1,7,0,[255,255,255]);[['NCM',141],['Quant.',158],['Unit.',179],['Valor Total',X-1]].forEach(([s,x])=>T(s,x,y,1,7,'right',[255,255,255]));y+=4.6};th();
+ r.itens.forEach(it=>{const n=it.nota?2:1;if(y+n*3.6>268){doc.addPage();y=15;th()}
+  T(it.cod,M+1,y,0,7);T(it.desc,30,y,0,7);T('4016.93.00',141,y,0,7,'right');T(mny(it.q)+' UN',158,y,0,7,'right');T(mny(it.u,4),179,y,0,7,'right');T(mny(it.tot),X-1,y,0,7,'right');
+  if(it.nota)T('('+it.nota+')',30,y+3.2,0,6.2,0,[110,110,110]);y+=n*3.6+.9});
+ if(y>225){doc.addPage();y=15}y+=1;
+ [['Subtotal:',t.sub],['IPI:',t.ipi],['ICMS ST:',0],['Total:',t.total]].forEach(([l,v])=>{doc.setFillColor(...PE);doc.rect(179,y-3.2,X-179,4.4,'F');T(l,175,y,1,7.5,'right');T(mny(v),X-1,y,0,7,'right');y+=4.8});
+ y+=7;T('Vencimentos',M,y,1,11);T('Para '+r.prazo.replace(/\s*dias?/i,'')+' dias',M+doc.getTextWidth('Vencimentos')+2,y,0,10);y+=6;
+ const P=cotParc(r),lw=19,cw=Math.min(24,(X-M-lw)/P.length);
+ ['Parcela','Vencimento','Valor'].forEach((l,i)=>{doc.setFillColor(255,224,190);doc.rect(M,y-3.2+i*4.6,lw,4.4,'F');T(l,M+lw-1,y+i*4.6,1,7,'right');P.forEach((p,j)=>{doc.setFillColor(...PE);doc.rect(M+lw+j*cw,y-3.2+i*4.6,cw,4.4,'F');T([p.n,fmt(p.v),mny(p.val)][i],M+lw+(j+1)*cw-1.5,y+i*4.6,0,7,'right')})});y+=3*4.6+7;
+ if(y>250){doc.addPage();y=15}
+ T('Outras Informações',M,y,1,11);y+=6;LV('Cotação - incluída em',d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR'),M,y);LV('Previsão de Faturamento',fmt(r.fat),M,y+4.6);LV('Vendedor',r.vend,M,y+9.2);
+ const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);T('Gerado em '+d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR')+' por '+(r.vend||'—'),W/2,281,0,7,'center',[130,130,130]);T('Página '+i+' de '+n,W/2,285,0,7,'center',[130,130,130])}
+ saveFile('cotacao_'+r.num+'_'+nt(C.nome).slice(0,24).replace(/ /g,'-')+'.pdf',doc.output('blob'))}
+
+function cotSelCli(){$('csel').innerHTML='<option value="">— escolher —</option>'+clis.map((c,i)=>`<option value="${i}">${esc(c.nome)}</option>`).join('')}
+function cotManual(){cotNew();cit.push({d:'',q:'',pi:-1});cotR();$('ce').innerHTML='<p class="hint">Lançamento manual: preencha o cliente, escolha o produto e a quantidade em cada item. O cliente é cadastrado ao salvar.</p>';$('c_cnpj').focus()}
+function cotBulk(){const nm=$('c_nome').value,l=$('cbulk').value.split(/\r?\n/).map(x=>x.split(/;|\t/).map(y=>y.trim())).filter(x=>x[0]&&isFinite(inum(x[1])));
+ if(!l.length){alert('Nada para adicionar. Use: descrição;quantidade');return}l.forEach(([d,q])=>cit.push({d,q:String(inum(q)),pi:cotMatch(d,nm)}));$('cbulk').value='';cotR()}
+
+// ===== GESTÃO DE PEDIDOS (etapa 1) =====
+const GST=['Novo pedido','Aguardando produção','Em produção','Aguardando faturamento','Parcialmente faturado','Faturado / Aguardando expedição','Em rota','Finalizado','Cancelado'];
+let gpP=[],gpN=[],gpNF=null,gpAl=[],gpDB=null,gpIt=[],gpSel=null;
+const gpKey=(c,n)=>(String(c).replace(/\D/g,'')||nt(c))+'|'+nt(n),gpAb=p=>p.status!='Finalizado'&&p.status!='Cancelado',
+ gpTot=p=>{let s=0,f=0;p.itens.forEach(i=>{s+=i.sol;f+=Math.min(i.fat,i.sol)});return{s,f,p:s-f}},
+ gpLg=(p,ev)=>p.hist.push({d:new Date().toISOString(),ev});
+const gpOpen=()=>new Promise(r=>{try{const q=indexedDB.open('vn_gestao',1);q.onupgradeneeded=()=>q.result.createObjectStore('kv');q.onsuccess=()=>{gpDB=q.result;r()};q.onerror=()=>r()}catch(e){r()}}),
+ gpRd=k=>new Promise(r=>{if(!gpDB)return r(null);try{const q=gpDB.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)}catch(e){r(null)}});
+function gpSv(){sv('gp_peds',gpP);sv('gp_notas',gpN);if(gpDB)try{const o=gpDB.transaction('kv','readwrite').objectStore('kv');o.put(JSON.parse(JSON.stringify(gpP)),'peds');o.put(JSON.parse(JSON.stringify(gpN)),'notas')}catch(e){}}
+async function gpInit(){if(!gpInit.ok){gpInit.ok=1;await gpOpen();const a=await gpRd('peds'),b=ld('gp_peds',[]);gpP=(a&&a.length>=b.length)?a:b;const a2=await gpRd('notas'),b2=ld('gp_notas',[]);gpN=(a2&&a2.length>=b2.length)?a2:b2;
+  $('gst').innerHTML='<option value="ab">Em aberto</option><option value="">Todos</option>'+GST.map(x=>`<option>${esc(x)}</option>`).join('');
+  $('gdl').innerHTML=prods.map(r=>`<option value="${esc(cod(r))}">`).join('');gpNew()}
+ gpR();gpNR()}
+function gpNew(){gpIt=[{cod:'',desc:'',sol:''}];['num','pc','cli','cnpj','prazo','obs'].forEach(k=>$('g_'+k).value='');$('g_ent').value=hoje();$('ge').innerHTML='';gpFR()}
+function gpFR(){$('gib').innerHTML=gpIt.map((x,i)=>`<tr><td><input list="gdl" value="${esc(x.cod)}" onchange="gpCod(${i},this.value)"></td><td><input value="${esc(x.desc)}" onchange="gpIt[${i}].desc=this.value"></td><td><input style="width:84px" value="${esc(x.sol)}" onchange="gpIt[${i}].sol=this.value"></td><td><button class="b s" onclick="gpIt.splice(${i},1);gpFR()">×</button></td></tr>`).join('')}
+function gpCod(i,v){const n=nt(v),k=prods.findIndex(r=>nt(cod(r))==n),j=k>=0?k:cotMatch(v,$('g_cli').value);gpIt[i].cod=j>=0?cod(prods[j]):v.trim();if(j>=0)gpIt[i].desc=pdesc(prods[j]);gpFR()}
+async function gpPdf(i){const f=i.files[0],e=$('ge');if(!f)return;e.innerHTML='<p class="hint">Lendo o PDF...</p>';
+ try{const I=await pdfRaw(await f.arrayBuffer()),L=toLines(I);if(!L.length)throw 1;const T=L.join('\n'),c=cotCli(L),
+   m=T.match(/Pedido(?:\s+de\s+(?:Venda|Compra))?\s*(?:N[º°o.]*|n[úu]mero)?\s*:?\s*(\d{2,})/i),pz=T.match(/(?:Prazo\s+de\s+entrega|Entrega)\s*:?\s*(\d{2})\/(\d{2})\/(\d{4})/i);
+  $('g_pc').value=m?m[1]:'';$('g_cli').value=c.nome||'';$('g_cnpj').value=c.cnpj||'';if(pz)$('g_prazo').value=pz[3]+'-'+pz[2]+'-'+pz[1];
+  let sem=0;gpIt=cotIt(L,I).map(([d,q])=>{const j=cotMatch(d,c.nome||'');if(j<0)sem++;return j>=0?{cod:cod(prods[j]),desc:pdesc(prods[j]),sol:q}:{cod:d.split(' ')[0],desc:d,sol:q}});
+  if(!gpIt.length)gpIt=[{cod:'',desc:'',sol:''}];gpFR();
+  e.innerHTML=`<p class="hint" style="color:var(--${gpIt[0].cod?(sem?'wa':'ok'):'er'})">${gpIt[0].cod?gpIt.length+' item(ns) lido(s)'+(sem?'; '+sem+' fora do cadastro de produtos.':'.'):'Não achei os itens no PDF. Use + Item.'} Digite o nº do pedido do Omie e confira os campos antes de salvar. Dica: na quantidade você pode escrever 20cx.</p>`}
+ catch(x){e.innerHTML='<p class="hint" style="color:var(--er)">Não consegui ler o PDF. Preencha manualmente.</p>'}}
+function gpSave(){const num=$('g_num').value.trim(),cli=$('g_cli').value.trim(),cnpj=$('g_cnpj').value.trim(),ent=$('g_ent').value||hoje(),pz=$('g_prazo').value,obs=$('g_obs').value.trim();
+ const its=gpIt.map(x=>({cod:x.cod.trim(),desc:x.desc.trim(),sol:gpQ(x)})).filter(x=>x.cod||x.desc||String(x.sol).trim());
+ if(!num||!cli){alert('Informe o número do pedido (Omie) e o cliente.');return}
+ if(!its.length||its.some(x=>!x.cod||!(x.sol>0))){alert('Todo item precisa de código e quantidade maior que zero.');return}
+ const dup=its.find((x,i)=>its.findIndex(y=>nt(y.cod)==nt(x.cod))!=i);if(dup){alert('Código repetido no pedido: '+dup.cod+'. Some as quantidades em uma só linha.');return}
+ const k=gpKey(cnpj||cli,num),p=gpP.find(x=>x.key==k);
+ if(p){if(!confirm('O pedido '+num+' deste cliente já existe. Atualizar os dados? As quantidades faturadas são mantidas.'))return;const ch=[];
+  its.forEach(n=>{const o=p.itens.find(y=>nt(y.cod)==nt(n.cod));if(!o){p.itens.push({cod:n.cod,desc:n.desc,sol:n.sol,fat:0});ch.push('+ '+n.cod+' '+n.sol)}else if(o.sol!=n.sol){ch.push(o.cod+': '+o.sol+' → '+n.sol);o.sol=n.sol}});
+  if(pz!=p.prazo){ch.push('prazo');p.prazo=pz}if(obs!=p.obs){ch.push('observações');p.obs=obs}p.cliente=cli;gpLg(p,'Pedido reimportado: '+(ch.join('; ')||'sem mudanças'))}
+ else gpP.unshift({id:Date.now(),key:k,num,pcli:$('g_pc').value.trim(),cliente:cli,cnpj,entrada:ent,prazo:pz,obs,status:GST[1],itens:its.map(x=>({...x,fat:0})),hist:[{d:new Date().toISOString(),ev:'Pedido criado e enviado para a fila de produção ('+its.length+' item(ns))'}]});
+ gpSv();gpNew();gpR()}
+function gpR(){const q=nt($('gq').value),st=$('gst').value,L=gpP.filter(p=>(st=='ab'?gpAb(p):!st||p.status==st)&&(!q||nt(p.num+' '+p.cliente+' '+p.itens.map(i=>i.cod+' '+i.desc).join(' ')).includes(q)));
+ $('gb').innerHTML=L.map(p=>{const t=gpTot(p);return`<tr><td>${esc(p.num)}</td><td>${esc(p.cliente)}</td><td>${fmt(p.entrada)}</td><td>${fmt(p.prazo)}</td><td><span class="tag ${p.status=='Cancelado'?'er':p.status=='Finalizado'?'ok':'wa'}">${esc(p.status)}</span></td><td>${t.s}</td><td>${t.f}</td><td>${t.p}</td><td><button class="b s" onclick="gpView(${p.id})">Abrir</button></td></tr>`}).join('')||'<tr><td colspan="9" class="hint">Nenhum pedido.</td></tr>';
+ $('gc').textContent=L.length+' pedido(s) · '+L.reduce((a,p)=>a+gpTot(p).p,0)+' un. pendentes';gpDash();gpFR2();if(gpSel)gpView(gpSel,1)}
+function gpView(id,ns){const p=gpP.find(x=>x.id==id);if(!p){gpSel=null;$('gdet').innerHTML='';return}gpSel=id;
+ $('gdet').innerHTML=`<div class="c" style="margin-top:14px"><h2>Pedido ${esc(p.num)} · ${esc(p.cliente)}</h2><p class="hint">${p.pcli?'Pedido do cliente '+esc(p.pcli)+' · ':''}CNPJ ${esc(p.cnpj||'—')} · entrada ${fmt(p.entrada)} · prazo ${fmt(p.prazo)}</p>
+ <div class="sc"><table><thead><tr><th>Código</th><th>Descrição</th><th>Solicitado</th><th>Faturado</th><th>Pendente</th></tr></thead><tbody>${p.itens.map(i=>`<tr><td>${esc(i.cod)}</td><td>${esc(i.desc)}</td><td>${i.sol}${gpCx(i.cod,i.sol)}</td><td>${i.fat}</td><td>${Math.max(0,i.sol-i.fat)}${gpCx(i.cod,Math.max(0,i.sol-i.fat))}</td></tr>`).join('')}</tbody></table></div>
+ <div class="f2"><div><label>Status</label><select onchange="gpSt(${p.id},this.value)">${GST.map(x=>`<option${x==p.status?' selected':''}>${esc(x)}</option>`).join('')}</select></div><div><label>Observações</label><input value="${esc(p.obs)}" onchange="gpOb(${p.id},this.value)"></div></div>
+ <label style="display:block;margin-top:10px"><input type="checkbox"${p.urg?' checked':''} onchange="gpUrg(${p.id},this.checked)"> Pedido / cliente urgente (sobe na prioridade de produção)</label><h2 style="margin-top:10px">Histórico</h2><div class="hint">${p.hist.slice().reverse().map(h=>new Date(h.d).toLocaleString('pt-BR')+' — '+esc(h.ev)).join('<br>')}</div>
+ <button class="b s" onclick="gpSel=null;$('gdet').innerHTML=''">Fechar</button></div>`;if(!ns)$('gdet').scrollIntoView({behavior:'smooth'})}
+function gpSt(id,v){const p=gpP.find(x=>x.id==id);if(!p||p.status==v)return;if(v=='Cancelado'&&!confirm('Cancelar este pedido?')){gpView(id,1);return}gpLg(p,'Status: '+p.status+' → '+v);p.status=v;gpSv();gpR()}
+function gpOb(id,v){const p=gpP.find(x=>x.id==id);if(!p||p.obs==v)return;gpLg(p,'Observações alteradas');p.obs=v.trim();gpSv()}
+function gpExp(){saveFile('pedidos-backup-'+hoje()+'.json',JSON.stringify({v:2,peds:gpP,notas:gpN},null,1))}
+function gpImp(i){const f=i.files[0];if(!f)return;f.text().then(t=>{try{const o=JSON.parse(t);if(!Array.isArray(o.peds))throw 1;let n=0;o.peds.forEach(p=>{if(p.key&&Array.isArray(p.itens)&&Array.isArray(p.hist)&&!gpP.some(x=>x.key==p.key)){gpP.push(p);n++}});(o.notas||[]).forEach(x=>{if(x.key&&!gpN.some(y=>y.key==x.key))gpN.push(x)});gpSv();gpR();gpNR();alert(n+' pedido(s) importado(s). Pedidos que já existiam não foram alterados.')}catch(e){alert('Arquivo de backup inválido.')}});i.value=''}
+
+// ===== GESTÃO DE PEDIDOS (etapa 2: baixa pela nota) =====
+const gpQ=x=>{const m=String(x.sol).match(/^\s*(\d+)\s*cx/i);if(m){const r=cxFind(x.cod),pq=r?inum(r.q):0;return pq>0?+m[1]*pq:NaN}return inum(x.sol)},
+ gpCx=(c,q)=>{const r=c&&cxFind(c),pq=r?inum(r.q):0;if(!(pq>0&&q>0))return'';const f=Math.floor(q/pq+1e-9),re=Math.round(q-f*pq);return' ('+(f?f+' cx':'')+(f&&re?' + ':'')+(re?re+' pç':'')+')'},
+ gpSame=(a,b)=>{a=nt(a);b=nt(b);return!!a&&!!b&&(a==b||a.includes(b)||b.includes(a))},
+ gpPend=(p,c)=>{const i=p.itens.find(y=>nt(y.cod)==nt(c));return i?Math.max(0,i.sol-i.fat):0},
+ gpOpenP=c=>c?gpP.filter(p=>gpAb(p)&&gpPend(p,c)>0):[];
+function gpProp(){const A=[];gpNF.its.forEach((it,i)=>{let r=it.qty;const hit=p=>nt(p.num)==nt(gpNF.ped)?1:0;
+ const cand=gpOpenP(it.cod).filter(p=>gpSame(p.cliente,gpNF.cliente)).sort((a,b)=>hit(b)-hit(a)||(a.prazo||'9').localeCompare(b.prazo||'9')||a.entrada.localeCompare(b.entrada));
+ cand.forEach(p=>{if(r<=0)return;const q=Math.min(r,gpPend(p,it.cod));A.push({i,k:p.key,q});r-=q});if(r>0)A.push({i,k:'',q:r})});return A}
+async function gpBx(){if(!last){alert('Valide uma nota primeiro.');return}const n=last.n;if(!n.nNF){alert('Informe o número da nota.');return}await gpInit();
+ const its=(n.itens||'').split(/\r?\n/).map(l=>l.split(';')).filter(x=>x[0]&&inum(x[1])>0).map(x=>{const j=cotMatch(x[0],n.cliente);return{desc:x[0].trim(),cod:j>=0?cod(prods[j]):'',qty:inum(x[1])}});
+ if(!its.length){alert('Não há itens lidos na nota.');return}
+ const key=nt(n.nNF)+'|'+nt(n.cliente),dup=gpN.find(x=>x.key==key);tab(5);
+ if(dup){alert('A NF '+n.nNF+' já foi baixada em '+new Date(dup.data).toLocaleDateString('pt-BR')+'. Para refazer, desfaça a baixa em Notas vinculadas.');return}
+ gpNF={key,nNF:n.nNF,cliente:n.cliente,ped:last.p.numero,its};gpAl=gpProp();gpBR();$('gbx').scrollIntoView({behavior:'smooth'})}
+function gpBR(){const N=gpNF;if(!N){$('gbx').innerHTML='';return}
+ $('gbx').innerHTML=`<div class="c" style="margin-top:14px"><h2>Baixa da NF ${esc(N.nNF)} · ${esc(N.cliente)}</h2><p class="hint">Pedido informado na conferência: ${esc(N.ped||'—')}. Confira a distribuição de cada item. Nada é gravado até você confirmar.</p>
+ ${N.its.map((it,i)=>`<h2 style="margin-top:10px">${esc(it.desc)} · ${it.qty} un.${gpCx(it.cod,it.qty)}${it.cod?'':' — fora do cadastro, só como excesso'}</h2><div class="sc"><table><thead><tr><th>Pedido</th><th>Quant. (un.)</th><th></th></tr></thead><tbody>${gpAl.map((a,j)=>a.i!=i?'':`<tr><td><select onchange="gpAl[${j}].k=this.value;gpBR()"><option value="">Excesso (sem pedido)</option>${gpOpenP(it.cod).map(p=>`<option value="${esc(p.key)}"${p.key==a.k?' selected':''}>${esc(p.num)} · ${esc(p.cliente)} · pendente ${gpPend(p,it.cod)}</option>`).join('')}</select></td><td><input style="width:90px" value="${a.q}" onchange="gpAl[${j}].q=inum(this.value)||0;gpBR()"></td><td><button class="b s" onclick="gpAl.splice(${j},1);gpBR()">×</button></td></tr>`).join('')}</tbody></table></div><p class="hint">Distribuído: ${gpAl.filter(a=>a.i==i).reduce((x,a)=>x+a.q,0)} de ${it.qty}</p><button class="b s" onclick="gpAl.push({i:${i},k:'',q:0});gpBR()">+ linha</button>`).join('')}
+ <label>Comentário para o que sobrar como excesso (sem pedido)</label><input id="gobs" value="Enviado a mais, acordado com o cliente">
+ <button class="b ok" onclick="gpOk()">Confirmar baixa</button><button class="b s" onclick="gpNF=null;gpAl=[];gpBR()">Cancelar</button></div>`}
+function gpOk(){const N=gpNF,obs=$('gobs').value.trim(),bx=[],ex=[],st={};
+ for(let i=0;i<N.its.length;i++){const it=N.its[i],L=gpAl.filter(a=>a.i==i&&a.q>0),s=L.reduce((x,a)=>x+a.q,0);
+  if(s!=it.qty){alert(it.desc+': a soma distribuída ('+s+') precisa ser igual à quantidade da nota ('+it.qty+').');return}
+  for(const a of L){if(!a.k){ex.push({cod:it.cod,desc:it.desc,qty:a.q});continue}const p=gpP.find(x=>x.key==a.k),u=bx.filter(b=>b.k==a.k&&nt(b.cod)==nt(it.cod)).reduce((x,b)=>x+b.qty,0);
+   if(!p||a.q+u>gpPend(p,it.cod)){alert(it.desc+': a quantidade passa do pendente do pedido '+(p?p.num:'')+'. Reduza ou deixe o resto como excesso.');return}bx.push({k:a.k,cod:it.cod,desc:it.desc,qty:a.q})}}
+ if(ex.length&&!obs){alert('Há excesso sem pedido: escreva o comentário.');return}
+ if(gpN.some(x=>x.key==N.key)){alert('Esta nota já foi baixada.');return}
+ bx.forEach(b=>{const p=gpP.find(x=>x.key==b.k);if(!(p.key in st))st[p.key]=[p.status];p.itens.find(y=>nt(y.cod)==nt(b.cod)).fat+=b.qty;gpLg(p,'NF '+N.nNF+' baixou '+b.cod+': '+b.qty+' un.'+gpCx(b.cod,b.qty))});
+ Object.keys(st).forEach(k=>{const p=gpP.find(x=>x.key==k),t=gpTot(p),ns=t.p==0?GST[5]:GST[4];if(!['Em rota','Finalizado','Cancelado'].includes(p.status)&&p.status!=ns){gpLg(p,'Status: '+p.status+' → '+ns);p.status=ns}});
+ if(ex.length){const p=gpP.find(x=>x.key==(bx[0]||{}).k)||gpP.find(x=>nt(x.num)==nt(N.ped)&&gpSame(x.cliente,N.cliente));ex.forEach(e=>{if(p)gpLg(p,'NF '+N.nNF+': '+e.qty+' un. enviadas a mais ('+(e.cod||e.desc)+')'+gpCx(e.cod,e.qty)+' — '+obs)})}
+ gpN.unshift({key:N.key,nNF:N.nNF,cliente:N.cliente,ped:N.ped,data:new Date().toISOString(),its:N.its,bx,ex,obs:ex.length?obs:'',st});
+ gpSv();gpNF=null;gpAl=[];gpBR();gpR();gpNR();alert('Baixa registrada.')}
+function gpUn(key){const n=gpN.find(x=>x.key==key);if(!n||!confirm('Desfazer a baixa da NF '+n.nNF+'? As quantidades voltam para os pedidos.'))return;
+ n.bx.forEach(b=>{const p=gpP.find(x=>x.key==b.k),i=p&&p.itens.find(y=>nt(y.cod)==nt(b.cod));if(i){i.fat=Math.max(0,i.fat-b.qty);gpLg(p,'Baixa da NF '+n.nNF+' desfeita: '+b.cod+' '+b.qty+' un.')}});
+ Object.entries(n.st||{}).forEach(([k,[a]])=>{const p=gpP.find(x=>x.key==k);if(!p||![GST[4],GST[5]].includes(p.status))return;const t=gpTot(p),ns=t.f==0?a:(t.p==0?GST[5]:GST[4]);if(ns!=p.status){gpLg(p,'Status: '+p.status+' → '+ns);p.status=ns}});
+ gpN=gpN.filter(x=>x!==n);gpSv();gpR();gpNR()}
+function gpNR(){$('gnb').innerHTML=gpN.map(n=>`<tr><td>${esc(n.nNF)}</td><td>${esc(n.cliente)}</td><td>${new Date(n.data).toLocaleDateString('pt-BR')}</td><td>${esc([...new Set(n.bx.map(b=>(gpP.find(x=>x.key==b.k)||{}).num||'?'))].join(', ')||'—')}</td><td>${n.ex.length?esc(n.ex.map(e=>e.qty+' un. '+(e.cod||e.desc)).join('; ')+' — '+n.obs):'—'}</td><td><button class="b s" onclick="gpUn('${esc(n.key)}')">Desfazer</button></td></tr>`).join('')||'<tr><td colspan="6" class="hint">Nenhuma nota baixada.</td></tr>'}
+
+// ===== GESTÃO DE PEDIDOS (etapa 3: prioridade e visão geral) =====
+const gpPW={prazo:.4,idade:.2,qtd:.25,ped:.15},gpPR=['Novo pedido','Aguardando produção','Em produção','Parcialmente faturado'],
+ gpDias=d=>d?Math.round((new Date(hoje()+'T00:00:00')-new Date(d+'T00:00:00'))/864e5):null;
+function gpFila(){const M={};gpP.filter(p=>gpPR.includes(p.status)).forEach(p=>p.itens.forEach(i=>{const q=Math.max(0,i.sol-i.fat);if(!q)return;const k=nt(i.cod),m=M[k]||(M[k]={cod:i.cod,q:0,L:[]});m.q+=q;m.L.push({p,q})}));
+ const A=Object.values(M),mq=Math.max(1,...A.map(a=>a.q)),mn=Math.max(1,...A.map(a=>a.L.length));
+ A.forEach(a=>{const ida=Math.max(0,...a.L.map(x=>gpDias(x.p.entrada)||0)),pz=a.L.filter(x=>x.p.prazo).map(x=>-gpDias(x.p.prazo)),minD=pz.length?Math.min(...pz):null,atr=a.L.filter(x=>x.p.prazo&&gpDias(x.p.prazo)>0).length,urg=a.L.some(x=>x.p.urg),
+   sp=urg||atr?100:minD==null?20:minD<=3?90:minD<=7?70:minD<=15?40:10;
+  a.sc=Math.round(sp*gpPW.prazo+Math.min(ida/30,1)*100*gpPW.idade+a.q/mq*100*gpPW.qtd+a.L.length/mn*100*gpPW.ped);
+  a.why=[a.q+' un.'+gpCx(a.cod,a.q)+' em '+a.L.length+' pedido(s)','mais antigo há '+ida+' dia(s)',atr?atr+' pedido(s) com prazo vencido':minD!=null?'prazo mais próximo em '+minD+' dia(s)':'sem prazo informado'].concat(urg?['marcado como urgente']:[]).join(' · ')});
+ return A.sort((a,b)=>b.sc-a.sc||b.q-a.q)}
+function gpFR2(){$('gfl').innerHTML=gpFila().map((a,i)=>`<tr><td>${i+1}</td><td>${esc(a.cod)}</td><td>${a.q}${esc(gpCx(a.cod,a.q))}</td><td>${a.L.length}</td><td><b>${a.sc}</b></td><td class="hint">${esc(a.why)}</td><td><button class="b s" onclick="gpPd('${esc(nt(a.cod))}')">Ver pedidos</button></td></tr>`).join('')||'<tr><td colspan="7" class="hint">Nenhum produto pendente de produção.</td></tr>'}
+function gpPd(k){const a=gpFila().find(x=>nt(x.cod)==k);if(!a)return;$('gfd').innerHTML=`<h2 style="margin-top:10px">${esc(a.cod)} · pedidos que pedem este produto</h2><div class="sc"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Entrada</th><th>Prazo</th><th>Pendente</th><th></th></tr></thead><tbody>${a.L.slice().sort((x,y)=>(x.p.prazo||'9').localeCompare(y.p.prazo||'9')).map(x=>`<tr><td>${esc(x.p.num)}${x.p.urg?' ⚑':''}</td><td>${esc(x.p.cliente)}</td><td>${fmt(x.p.entrada)}</td><td>${fmt(x.p.prazo)}</td><td>${x.q}${esc(gpCx(a.cod,x.q))}</td><td><button class="b s" onclick="gpView(${x.p.id})">Abrir</button></td></tr>`).join('')}</tbody></table></div>`}
+function gpUrg(id,v){const p=gpP.find(x=>x.id==id);if(!p)return;p.urg=!!v;gpLg(p,v?'Marcado como urgente':'Urgência removida');gpSv();gpR()}
+function gpDash(){const o=gpP.filter(gpAb),c=x=>gpP.filter(p=>p.status==x).length,mes=hoje().slice(0,7),
+ fin=gpP.filter(p=>p.status=='Finalizado'&&((p.hist.slice().reverse().find(h=>/→ Finalizado/.test(h.ev))||{}).d||'').slice(0,7)==mes).length,D={},C={};
+ o.forEach(p=>p.itens.forEach(i=>{const q=Math.max(0,i.sol-i.fat);D[i.cod]=(D[i.cod]||0)+q;C[p.cliente]=(C[p.cliente]||0)+q}));
+ const top=O=>Object.entries(O).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>esc(k)+': '+v+' un.').join('<br>')||'—',
+ K=[['Pedidos em aberto',o.length],['Unidades pendentes',o.reduce((a,p)=>a+gpTot(p).p,0)],['Parcialmente faturados',c(GST[4])],['Aguardando produção',c(GST[1])],['Aguardando faturamento',c(GST[3])],['Em rota',c(GST[6])],['Finalizados no mês',fin]];
+ $('gdash').innerHTML=K.map(([l,v])=>`<div class="c" style="min-width:130px;text-align:center"><div class="hint">${l}</div><div style="font-size:26px;font-weight:700">${v}</div></div>`).join('')+`<div class="c" style="min-width:220px"><div class="hint">Produtos com maior demanda</div>${top(D)}</div><div class="c" style="min-width:220px"><div class="hint">Clientes com maior volume pendente</div>${top(C)}</div>`}
+
+build();applyCfg();
+</script></body></html>
